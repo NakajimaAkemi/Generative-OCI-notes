@@ -9,6 +9,6 @@ A language model is a probabilistic model of text, generating a token at a time 
 ## LLM architectures
 Typically models are composed by *Encoders* and *Decoders* given the fact that they are built upon the *Transformer* architecture. Model come in different sizes (# of parameters) or for capabilities (embedding/generation).
 
-- Encoder
-- Decoder
-
+### Encoder
+Encoder models convert a sequence of tokens to an embedding (vector representation).
+![Encoder](/assets/images/immagine_2025-10-15_180714834.png)

@@ -16,3 +16,7 @@ Encoder models convert a sequence of tokens to an embedding (vector representati
 ### Decoder
 Decoders take a sequence of tokens and ouput the next one, designed for text generation.
 ![Decoder](/assets/images/immagine_2025-10-15_181107207.png)
+
+
+### Encoder + Decoder example
+![Encoder+Decoder](/assets/images/immagine_2025-10-15_181308276.png)

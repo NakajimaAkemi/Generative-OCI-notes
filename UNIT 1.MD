@@ -20,3 +20,22 @@ Decoders take a sequence of tokens and ouput the next one, designed for text gen
 
 ### Encoder + Decoder example
 ![Encoder+Decoder](/assets/images/immagine_2025-10-15_181308276.png)
+
+## Prompting 
+### Techniques
+Prompting(In-Context learning) consists in providing the LLM additional instructions in order to exer control over the probability distribution, eliciting a particular style of responses. There two techniques worth noting:
+1. K-shot promptinng: provide K examples in context window
+2. Chain of thought: Divide the request into subtasks and provide the LLM each step in the context in order to increase the accuracy
+3. Least to most: Instruct the LLM to decompose the problem and solve, easy first
+4. Step back: prompt the LLM to identify the high-level concepts pertinent to the specific task
+
+### Safety issues
+One key risks of LLM is the *prompt injection* where LLM is deliberately provided with inputs that attempts to ignore instruction and/or behave contrary to the deployment. We need to make sure that the LLM does not leak personal data.
+
+## Training
+Prompting alone may not be enough for certain domain specific tasks, meaning that domain adaptation is needed
+![Table](/assets/images/immagine_2025-10-15_182525150.png
+)
+
+
+

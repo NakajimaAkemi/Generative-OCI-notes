@@ -52,3 +52,24 @@ Prompting alone may not be enough for certain domain specific tasks, meaning tha
 When we make a domain specific request, the LLM rely solely on data that it has already seen, meaning if the LLM has not been trained on that domain it may say that it doesn't know or worse, be confidently wrong and provide factually unfounded replies, this phenomen is called *hallucination*. Each  generated text are evaluated in the following aspects:
 - Attributability:  The ability to attribute the answer to a certain source. 
 - Groundedness: How much it is grounded in a document. 
+
+### How RAG works
+This method can be trained end to end is non-parametric.
+The following steps:
+1. Ingestion: documents are divided into chunks, embedded in the vector space ready for fetching.
+2. Retrieval: We do a semating search from the prompt and find the semantically similar documents.
+3. Generation: We provide the documents to the context window and generate the response.
+
+
+## Code models
+Some models have been trained on code and comments such as Co-pilot and Code Llama and has beed largerly successful.
+
+## Multi-Modal 
+These models are trained on multiple modalities, can be autoregressive such as DALL-E. Diffusion models can produce complex output simultaneously, rather than token by token which is difficult to apply to text because it's categorical, they exist but are not as popular. image-to-text, text-to-image or both.
+
+## Language agents 
+There some frameworks that allow to create LLM-based agents, capablee of tool usage, tkae action in response to plans and the enviroment.
+1. ReAct: Iterative framework emits a thougth and then reacts, and observe.
+2. ToolFormer: Pre-training technique where strings are replaced with calls to tool thet yield result.
+3. Bootstrapped reasoning: prompt the LLM to emit rationalization of intermediate steps, as fine tuning data
+

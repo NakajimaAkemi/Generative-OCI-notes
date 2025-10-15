@@ -50,5 +50,5 @@ Prompting alone may not be enough for certain domain specific tasks, meaning tha
 
 ## Rag
 When we make a domain specific request, the LLM rely solely on data that it has already seen, meaning if the LLM has not been trained on that domain it may say that it doesn't know or worse, be confidently wrong and provide factually unfounded replies, this phenomen is called *hallucination*. Each  generated text are evaluated in the following aspects:
-. Attributability:  The ability to attribute the answer to a certain source. 
-. Groundedness: How much it is grounded in a document. 
+- Attributability:  The ability to attribute the answer to a certain source. 
+- Groundedness: How much it is grounded in a document. 

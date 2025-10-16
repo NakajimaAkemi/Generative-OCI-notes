@@ -38,6 +38,7 @@ Required fields:
  1. DOCID
  2. BODY
  3. VECTOR
+
 Optional:
  1. CHUNKID: id in case the document is larger than 512 tokens.
  2. URL of reference

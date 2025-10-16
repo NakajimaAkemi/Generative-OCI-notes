@@ -6,11 +6,9 @@ Main features:
  - Dedicated AI cluster with their GPUs that host fine-tuning and inference workloads
 
 ## Pretrained foundational chat models
- 1. command-r-plus (cohere): more powerful and expensive 128k tokens
- 2. command-r-16k (cohere): 16k tokens, entry level use cases 
- 3. llama 3-70b-instruct (meta)
-
-The chat models keep track of the conversation and are instruction tuned models.
+ 1. command-r-plus (cohere): more powerful and expensive prompt up to 128k tokens, q&a, information retrival and sentiment analysi, response up to 4k tokens.
+ 2. command-r-16k (cohere): 16k tokens, entry level use cases, response up to 4k tokens. For speed and cost.
+ 3. llama 3-70b-instruct or 405b (meta): prompt response up to 128k tokens. The chat models keep track of the conversation and are instruction tuned models, the 405b model is the largest available and suited for enterprise apps.
 
 ## Embedding models
  1. embded-english-v3.0 (cohere):

@@ -274,7 +274,7 @@ flowchart LR
     C --> D[Generate Embeddings via OCI Model]
     D --> E[Store in Oracle Vector Search]
     E --> F[Retrieve Relevant Chunks]
-    F --> G[Chat Model (OCI Generative AI)]
+    F --> G[Chat Model OCI Generative AI]
     G --> H[Answer with Context]
     H --> I[Store Conversation in Memory]
     I --> A

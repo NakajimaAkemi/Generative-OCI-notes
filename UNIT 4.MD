@@ -44,3 +44,20 @@ Optional:
  2. URL of reference
  3. TITLE
  4. PAGE_NUMBERS
+
+
+## Function query
+This is a user defined function returns vector search result feom each query:
+- p_query: Query String
+- top_k
+
+Requirements:
+1. The embedding model that you use for the function query field must the same that transforms the body to embedding
+2. Function return fields must match the table
+3. If the function returns field names that don't match the table field names, you must use aliases
+
+
+### Knowledge base defition
+1. We define a data source, which is based on a data bucket with files we want, we can select one or all
+2. E setup the vector search type
+3. Create an Agent Welcome message and knowledge base 

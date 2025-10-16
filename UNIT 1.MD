@@ -41,7 +41,16 @@ Decoders take a sequence of tokens and output the **next token**, designed prima
 2. **Chain of Thought (CoT)** — Divide the request into subtasks and show reasoning steps to improve accuracy.
 3. **Least-to-Most Prompting** — Instruct the LLM to decompose the problem and solve from easy to complex.
 4. **Step-Back Prompting** — Ask the LLM to identify high-level concepts before solving the task.
+5. **zero-shot Chain of Thought** — Like CoT but without examples.
 
+#### Prompt format
+```	
+Llama 2 prompt can be formatd like the following for specific instructions
+<<s>
+[INST]
+
+[/INST]
+```	
 ### ⚠️ Safety Issues
 
 * **Prompt Injection:** Malicious inputs can attempt to override instructions or extract sensitive data.

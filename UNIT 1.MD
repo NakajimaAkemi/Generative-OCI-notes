@@ -105,11 +105,7 @@ RAG is a **non-parametric** approach that augments LLMs with external data sourc
 
 ---
 
-Of course 😊 — here’s a **cleaner, clearer, and better-structured version** of your section, with consistent tone, professional formatting, and improved flow.
-
----
-
-### 6.5 🧠 LLM Customization Overview
+## 6.5 🧠 LLM Customization Overview
 
 Training and adapting large language models (LLMs) can significantly impact performance, cost, and efficiency. Below is an overview of different approaches and when to use them.
 

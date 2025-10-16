@@ -239,70 +239,172 @@ print(embed_text_response.data)
 
 ---
 
+## 🖥️ Dedicated AI Clusters
 
-## 🖥️ Dedicated AI Cluster
-It's a  single tenant deployment where the GPUs only host your custom models, and given that the endpoint is not
-shared the throughput is consistent.
-The process of setting up a dedicated cluster:
-1. Create the cluster
-2. Create endpoint setup for receiving requests
-3. Serve the model
+A **Dedicated AI Cluster** is a single-tenant deployment where GPUs are exclusively reserved for your custom models.
+Because endpoints are not shared, throughput and performance remain **consistent and predictable**.
 
-Cluster types: 
-1. Fine-tuning: used for training a pretrained foundational model
-2. Hosting: for hosting custom model endpoint for inference
+---
 
-Being that Inference cost is computationally expensive, each hosting cluster can host one base model endpoint
-and N fine tuned custom models sharing the same GPU resources. For the overhead concern given that GPU memory is limited and switching between models adds significant overhead, the models share the majority of weights adding minimal overhead.
+### ⚙️ Cluster Lifecycle
 
-### Cluster Unit Types
-1. Large Cohere dedicated: fine tuning and hosting for command r family (and R+)
-2. Small cohere dedicated: fine tuning and hosting for command r family
-3. Embed Cohere dedicated: hosting embedding models for english v3, multilingual v3
-4. Large meta dedicated: Fine tuning for LLama models, 3.3/3.1 (70b), 3.2 (11/90b), 3.1 (405)
+Setting up a dedicated cluster involves three main steps:
 
-#### Sizing
+1. **Create the Cluster:**
+   Provision GPU resources in your tenancy.
+
+2. **Define the Endpoint:**
+   Configure an endpoint to handle inference or fine-tuning traffic.
+
+3. **Serve the Model:**
+   Deploy and host your base or fine-tuned model.
+
+---
+
+### 🧩 Cluster Types
+
+| Cluster Type    | Purpose                                                       |
+| --------------- | ------------------------------------------------------------- |
+| **Fine-Tuning** | Used to train or adapt a pretrained foundational model.       |
+| **Hosting**     | Hosts custom or base model endpoints for inference workloads. |
+
+Inference operations are **computationally expensive**, so OCI allows multiple fine-tuned models to share GPU resources efficiently.
+A single **hosting cluster** can serve one base model and several fine-tuned variants (e.g., T-Few models), as most model weights are shared — minimizing GPU memory overhead.
+
+---
+
+### 💡 Cluster Unit Types
+
+| Unit Type                  | Description                                                               |
+| -------------------------- | ------------------------------------------------------------------------- |
+| **Large Cohere Dedicated** | Fine-tuning and hosting for *Cohere Command-R* and *Command-R+* models.   |
+| **Small Cohere Dedicated** | Cost-efficient fine-tuning and hosting for *Cohere Command-R* models.     |
+| **Embed Cohere Dedicated** | Hosting embedding models such as *English v3* and *Multilingual v3*.      |
+| **Large Meta Dedicated**   | Fine-tuning for *Meta Llama* models (3.1, 3.2, 3.3, 3.4, 70B, 90B, 405B). |
+
+#### 📏 Sizing
+
 ![Sizing](/assets/images/immagine_2025-10-16_121107188.png)
 
+---
 
-### Pricing
-The minimum commitment for hosting 744 unit-hours/cluster while for fine-tuning is 1 unit hour/finetuning job.
-Each finetuning cluster requires 8 units and each is active for 5 hours.
-Monthly fine tuning cost = 40 unit  hours/week *4 weeks
-Monthly hosting cost= 744 unit hours * dedicated unit
-Total cost (160+744 unit hours) * dedicated unit
+### 💰 Pricing Model
 
-### Setting up cluster
-In the Generative AI section you can setup the cluster, defining the model, if you're t few fine hosting you can host up to 50 models
+| Use Case        | Minimum Commitment            | Notes                                  |
+| --------------- | ----------------------------- | -------------------------------------- |
+| **Hosting**     | 744 unit-hours / cluster      | Continuous serving availability        |
+| **Fine-Tuning** | 1 unit-hour / fine-tuning job | Each job requires 8 units for ~5 hours |
 
+**Example Calculation:**
 
+* Monthly fine-tuning cost = `40 unit-hours/week × 4 weeks`
+* Monthly hosting cost = `744 unit-hours × dedicated unit rate`
+* **Total monthly cost = (160 + 744) unit-hours × unit rate**
 
-## Fine tuning configuration
-The training methods are Tfew and LoRa, the hyperparams are:
-1. Total training epochs: number of iterations (int 1-10)
-2. Learning rate: the rate of updating the model parameter (0.000005-0.1)
-3. Training batch size: number of samples processed (int 8-32)
-4. Early stopping patience: tolerance of stagnation in the loss metric (0 disable or int 1-16)
-5. Early stopping threshold: minmum loss reuqired to prevent early stopping
-6. Log Model metrics interval in steps: determines how frequently to log model metrics (loss and learning rate) set to 1
+---
 
-### Evaluation
-1. Accuracy: how much the generated tokens match the annoted ones.
-2. Loss: how far is from the groundtruth, gets lower with epochs
+### ⚙️ Cluster Setup in Console
 
+From the **Generative AI** section of the OCI Console, you can:
 
-## Fine tuning demo
-We have a json file that is composed of json object with properties "prompt" and "completion" both UTF8 encoded.
-We create the custom model from the Generative AI panel where we create the base model, the cluster that matches the base model and the finetuning method between tfew or vanilla, in the end some parameters. The fine tuning dataset file is uploaded in a bucket. Then we kick off the finetuning process with metrics loss/accuracy and have our custom model ready.
+1. Create a cluster and specify the base model family.
+2. Choose the **fine-tuning method** (e.g., *T-Few* or *Vanilla*).
+3. Allocate the cluster for hosting or fine-tuning.
+4. Host up to **50 fine-tuned models** per cluster when using **T-Few** fine-tuning.
 
-### Endpoint for inference
-We create our endpoint with name, description the model amd a dedicated cluster (which with 50 tfew we can have up to 50 models), we can then toggle content moderation to avoid toxic and biased responses. We can make a few calls trough the OCI playground with a prompt.
+---
 
+## 🧬 Fine-Tuning Configuration
 
-## OCI security
-Security and privacy of customer workloads are essential design tenet, the GPUs allocated for a cutomer's generative AI task are isolated from other GPUs. GPU cluster handle only the customer's models.
-Base model + finetuned model endpoints share the same cluster resource for the most efficient utilization of underlying GPUs. Onnly a customer's application can access the models created and hosted within the customer's tenancy.
+Fine-tuning methods include **T-Few** and **LoRA**, each designed for parameter-efficient adaptation of base models.
+
+### 🔧 Hyperparameters
+
+| Parameter                              | Description                                | Range / Notes        |
+| -------------------------------------- | ------------------------------------------ | -------------------- |
+| **Total Training Epochs**              | Number of iterations                       | 1–10                 |
+| **Learning Rate**                      | Speed of parameter updates                 | 0.000005–0.1         |
+| **Training Batch Size**                | Samples processed per step                 | 8–32                 |
+| **Early Stopping Patience**            | Epochs without improvement before stopping | 0 (disabled) or 1–16 |
+| **Early Stopping Threshold**           | Minimum loss change to prevent early stop  | —                    |
+| **Log Model Metrics Interval (steps)** | Frequency of logging training metrics      | Typically set to 1   |
+
+---
+
+### 📊 Evaluation Metrics
+
+| Metric       | Description                                                            |
+| ------------ | ---------------------------------------------------------------------- |
+| **Accuracy** | Percentage of generated tokens that match annotated ground truth.      |
+| **Loss**     | Measures distance from the target output; decreases as model improves. |
+
+---
+
+## 🧪 Fine-Tuning Demo
+
+A fine-tuning dataset is a **JSON file** containing objects with `prompt` and `completion` fields (both UTF-8 encoded).
+
+### 🔧 Process Overview
+
+1. **Prepare the Dataset:**
+   Upload your JSON training file to an OCI Object Storage bucket.
+
+2. **Create the Custom Model:**
+
+   * Select the **base model** and **fine-tuning method** (*T-Few* or *Vanilla*).
+   * Choose a **cluster** matching the model family.
+   * Configure **hyperparameters** and **evaluation settings**.
+
+3. **Start Fine-Tuning:**
+   Initiate the training job and monitor metrics such as **loss** and **accuracy**.
+
+4. **Deploy the Model:**
+   Once training is complete, the fine-tuned model can be deployed for inference.
+
+---
+
+## 🌐 Endpoint for Inference
+
+After fine-tuning, create a dedicated **endpoint** for serving your model.
+
+**Configuration includes:**
+
+1. **Name and Description**
+2. **Associated Model and Cluster**
+3. **Content Moderation Toggle** — to detect and filter toxic or biased outputs
+
+You can test inference directly through the **OCI Playground**, providing prompts and evaluating model responses interactively.
+
+---
+
+## 🔒 OCI Security
+
+The **security and privacy** of generative AI workloads are foundational OCI principles.
+
+### 🧱 Isolation
+
+* GPU clusters are **isolated per customer** — no sharing between tenancies.
+* Each cluster handles **only the customer’s models**, ensuring complete data segregation.
+* Both **base** and **fine-tuned** model endpoints share the same underlying GPU cluster for optimal utilization.
+
 ![Cluster isolation](/assets/images/immagine_2025-10-16_162912583.png)
 
-We can leverage the security services with IAM Authentication and Authoirizatio, for example we can autorize app x to access the custom model while app y to handle the base model. Key management store the model's keys and have allow access to the Gen AI object storage buckets that contain the models' weights.
+---
+
+### 🔐 IAM & Key Management Integration
+
+OCI integrates with **Identity and Access Management (IAM)** for fine-grained access control:
+
+* Define which **applications** or **users** can invoke specific models.
+
+  * e.g., App X → custom model, App Y → base model.
+* Use **Key Management Service (KMS)** to securely store encryption keys.
+* Restrict access to **Object Storage buckets** containing model weights.
+
 ![Security](/assets/images/immagine_2025-10-16_163614382.png)
+
+---
+
+✅ **Summary:**
+OCI’s Generative AI architecture provides an **end-to-end managed environment** — from model fine-tuning and deployment to secure hosting — ensuring **performance, efficiency, and compliance** across enterprise workloads.
+

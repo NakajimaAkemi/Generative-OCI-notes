@@ -72,8 +72,8 @@ flowchart LR
 
 Fine-tuning improves model performance for **specific tasks** using **custom data**.
 
-1. **T-Few (Cohere):** Efficient fine-tuning method that updates only a small subset of parameters.
-2. **Vanilla Fine-Tuning:** Updates most or all layers for maximum adaptability.
+1. **T-Few (Cohere):** Efficient fine-tuning method that updates only a small subset of model's weights, it's and additive Few Shot Parameter Efficient Fine Tuning (PEFT) that inserts additional layers, comprising 0.01% of the baseline model size. The weights are isolated in the T-few layers reducing the overall training time and cost.
+2. **Vanilla Fine-Tuning:** Updates most or all layers weights for maximum adaptability.
 
 ---
 
@@ -239,9 +239,27 @@ print(embed_text_response.data)
 
 ---
 
+
 ## 🖥️ Dedicated AI Cluster
+It's a  single tenant deployment where the GPUs only host your custom models, and given that the endpoint is not
+shared the throughput is consistent.
+The process of setting up a dedicated cluster:
+1. Create the cluster
+2. Create endpoint setup for receiving requests
+3. Serve the model
 
-(todo)
+Cluster types: 
+1. Fine-tuning: used for training a pretrained foundational model
+2. Hosting: for hosting custom model endpoint for inference
 
+Being that Inference cost is computationally expensive, each hosting cluster can host one base model endpoint
+and N fine tuned custom models sharing the same GPU resources. For the overhead concern given that GPU memory is limited and switching between models adds significant overhead, the models share the majority of weights adding minimal overhead.
 
+### Cluster Unit Types
+1. Large Cohere dedicated: fine tuning and hosting for command r family (and R+)
+2. Small cohere dedicated: fine tuning and hosting for command r family
+3. Embed Cohere dedicated: hosting embedding models for english v3, multilingual v3
+4. Large meta dedicated: Fine tuning for LLama models, 3.3/3.1 (70b), 3.2 (11/90b), 3.1 (405)
 
+#### Sizing
+![Sizing](/assets/images/immagine_2025-10-16_121107188.png)

@@ -28,7 +28,6 @@ flowchart LR
     C --> D[Send Content to LLM]
     D --> E[LLM Generates Informed Answer]
     E --> A
-
 ```
 ## Finetuning
 We use finetuning for improving the model on specific tasks with our custom data and efficiency.

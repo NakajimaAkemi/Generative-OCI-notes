@@ -32,9 +32,10 @@ In the service Analytics and AI service we find the Gen AI dashboard, we can cus
 1. Top P
 2. Top K
 3. Temperature
-4. Preamble override
+4. Preamble override: Intial guideline/context
 5. Frequency penalty
-6. Presence penalty
+6. Presence penalty: works the same but it penalizes regardless of the frequency.
+7. Max tokens.
 
 For the embedding models we have
 1. Truncate

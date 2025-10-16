@@ -263,3 +263,14 @@ and N fine tuned custom models sharing the same GPU resources. For the overhead 
 
 #### Sizing
 ![Sizing](/assets/images/immagine_2025-10-16_121107188.png)
+
+
+### Pricing
+The minimum commitment for hosting 744 unit-hours/cluster while for fine-tuning is 1 unit hour/finetuning job.
+Each finetuning cluster requires 8 units and each is active for 5 hours.
+Monthly fine tuning cost = 40 unit  hours/week *4 weeks
+Monthly hosting cost= 744 unit hours * dedicated unit
+Total cost (160+744 unit hours) * dedicated unit
+
+### Setting up cluster
+In the Generative AI section you can setup the cluster, defining the model, if you're t few fine hosting you can host up to 50 models

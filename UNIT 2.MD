@@ -24,10 +24,11 @@ We can embed sentences where as likentokens, similar sentences are closer.
 ```mermaid
 flowchart TD
     A[User Question] --> B[Vector Database (VDB)]
-    B --> C[Retrieve Relevant Content (e.g., Matching Docs)]
-    C --> D[Send Retrieved Content to LLM]
+    B --> C[Retrieve Relevant Content]
+    C --> D[Send Content to LLM]
     D --> E[LLM Generates Informed Answer]
-    E --> A
+    E --> A[User Receives Answer]
+
 ```
 ## Finetuning
 We use finetuning for improving the model on specific tasks with our custom data and efficiency.

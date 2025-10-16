@@ -37,6 +37,7 @@ LangChain applications are built from modular components that can be combined in
 
 5. **Document Loaders**
    Handle loading and preprocessing of data from various sources to make it usable by the model.
+![Template completion](/assets/images/immagine_2025-10-16_164835457.png)
 
 ---
 
@@ -79,9 +80,9 @@ chunks = text_splitter.split_text(text)
 
 ---
 
-### 🧠 Integration with OCI Generative AI & Oracle 23AI
+## 🧠 Integration with OCI Generative AI & Oracle 23AI
 
-LangChain includes community integrations for **Oracle Generative AI** and **Oracle Database 23AI**, enabling seamless use of OCI services within the LangChain ecosystem.
+LangChain includes community integrations for **Oracle Generative AI** and **Oracle Database 23AI**, enabling seamless use of OCI services within the LangChain ecosystem. We can use third party models for embedding or inside the Database23ai by downloading pre-trained embedding models, converting them in ONNX format.
 
 **Capabilities include:**
 
@@ -101,7 +102,10 @@ LangChain includes community integrations for **Oracle Generative AI** and **Ora
    * Translate **natural language queries** into SQL using LLM reasoning.
    * Integrate with LangChain to build intelligent data agents that interact directly with Oracle databases.
 
-![Template completion](/assets/images/immagine_2025-10-16_164835457.png)
 
----
-
+### Vector data type
+In the Oracle 23 ai database we store the vector in the table as BLOB.
+We can connect to the db via python, with username, password, dns
+Create chunks of the document adding metadata as rows (a dict with id, link and text) converting everything in document object
+After doing so we connect to the OCIGenAIEmbeddings class, defining the model, endpoint, auth type and compartment id
+At last we create a knoweledge base ORacleVS.from_documents(docs, embed_model, client, table name, distance strategy)

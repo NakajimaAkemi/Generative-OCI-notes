@@ -1,20 +1,107 @@
-# OCI Generative Integration
+# 🤖 OCI Generative AI Integration
 
+## 🔗 LangChain Integration
 
-## Langchain integration
-It's a framework that allows to easily set up chatbot application.
+**LangChain** is a powerful framework that simplifies the creation of **chatbot applications** and **LLM-powered workflows**.
+It allows developers to seamlessly connect large language models (LLMs), data sources, and application logic.
 
 ![LangChain](/assets/images/immagine_2025-10-16_164313861.png)
 
- The principal components are: 
+---
 
-1. Model: could be LLM for text completion and Chat Models built for conversation 
-2. Prompt: String prompt template which is basically a string and ChatPromptTemplate for a list of chat messages.
-3. Chain of components including LLM, we make use of LCEL (Langchain expression language) or legacy python classes 
-4. Memory to store the conversation, chains interact with the memmory, it reads before the chain execution (before core logic) and writes after (After core logic)
-5. 
+### 🧩 Core Components
+
+LangChain applications are built from modular components that can be combined into “chains”:
+
+1. **Model**
+   The computational engine that processes text — either a **Text Completion Model (LLM)** or a **Chat Model** designed for conversational tasks.
+
+2. **Prompt**
+   Defines how inputs are structured and passed to the model.
+
+   * `PromptTemplate`: plain string-based prompt template.
+   * `ChatPromptTemplate`: structured list of chat messages.
+
+3. **Chain**
+   The pipeline connecting multiple components (e.g., model + prompt + memory).
+   You can define chains using:
+
+   * **LCEL (LangChain Expression Language)** — for declarative composition.
+   * **Legacy Python classes** — for traditional object-oriented chaining.
+
+4. **Memory**
+   Stores and manages conversation history.
+
+   * **Before execution:** The chain **reads** from memory to provide context.
+   * **After execution:** The chain **writes** the latest user and model messages back to memory.
+
+5. **Document Loaders**
+   Handle loading and preprocessing of data from various sources to make it usable by the model.
+
+---
+
+### 📄 Document Loaders and Chunking
+
+Document loaders import and process data from a variety of sources — such as **PDF, HTML, CSV, JSON, or Markdown** — into a text format suitable for embedding or prompt input.
+
+Once documents are loaded, they are **split into smaller chunks**.
+Chunking is a crucial step that directly affects performance and accuracy:
+
+| Chunk Property    | Description                                                 |
+| ----------------- | ----------------------------------------------------------- |
+| **Chunk Size**    | Should align with the model’s context window.               |
+| **Chunk Overlap** | Ensures semantic continuity between chunks.                 |
+| **Splitter Type** | Can be paragraph-based, sentence-based, or character-based. |
+
+LangChain provides built-in splitters such as **`RecursiveCharacterTextSplitter`**.
+
+---
+
+### 💻 Example: Loading and Splitting a PDF
+
+```python
+from langchain.document_loaders import PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+# Load the PDF
+pdf_loader = PyPDFLoader("document_path.pdf")
+text = ""
+for page in pdf_loader.load():
+    text += page.page_content
+
+# Split text into chunks
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=2000,
+    chunk_overlap=100
+)
+chunks = text_splitter.split_text(text)
+```
+
+---
+
+### 🧠 Integration with OCI Generative AI & Oracle 23AI
+
+LangChain includes community integrations for **Oracle Generative AI** and **Oracle Database 23AI**, enabling seamless use of OCI services within the LangChain ecosystem.
+
+**Capabilities include:**
+
+1. **OCI Generative AI Models**
+
+   * Access **chat** and **embedding** models from OCI via REST APIs.
+   * Leverage Cohere and Meta models directly within LangChain pipelines.
+
+2. **Oracle AI Vector Search**
+
+   * Store and query vector embeddings efficiently.
+   * Supports **automatic embedding generation** from unstructured data.
+   * Provides utilities for **semantic similarity search** and **retrieval-augmented generation (RAG)**.
+
+3. **Oracle 23AI (Select AI)**
+
+   * Translate **natural language queries** into SQL using LLM reasoning.
+   * Integrate with LangChain to build intelligent data agents that interact directly with Oracle databases.
 
 ![Template completion](/assets/images/immagine_2025-10-16_164835457.png)
 
-### OCI Generative AI and Oracle 23 ai integration
-Langchain community classes include support for Oracle AI 23 vector store, embedding models and chat models from OCI Generative ai. Oracle AI vector search offers vector utilities to automatically generate embedding from unstructed data, can use rest API for embedding and chat models and ORACLE 23 ai Select ai can generate SQL from natural language.
+---
+

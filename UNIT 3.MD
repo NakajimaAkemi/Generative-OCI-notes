@@ -2,8 +2,8 @@
 
 ## 🔗 LangChain Integration
 
-**LangChain** is a powerful framework that simplifies the creation of **chatbot applications** and **LLM-powered workflows**.
-It allows developers to seamlessly connect large language models (LLMs), data sources, and application logic.
+**LangChain** is a framework designed to simplify the creation of **LLM-powered applications** such as chatbots, RAG systems, and intelligent agents.
+It enables seamless integration between **large language models (LLMs)**, **data sources**, and **application logic**.
 
 ![LangChain](/assets/images/immagine_2025-10-16_164313861.png)
 
@@ -11,50 +11,48 @@ It allows developers to seamlessly connect large language models (LLMs), data so
 
 ### 🧩 Core Components
 
-LangChain applications are built from modular components that can be combined into “chains”:
+LangChain applications are composed of modular elements that can be connected into “chains” to create complex workflows:
 
 1. **Model**
-   The computational engine that processes text — either a **Text Completion Model (LLM)** or a **Chat Model** designed for conversational tasks.
+   The computational component that processes text — either a **Text Completion Model (LLM)** or a **Chat Model** designed for dialogue.
 
 2. **Prompt**
    Defines how inputs are structured and passed to the model.
 
-   * `PromptTemplate`: plain string-based prompt template.
+   * `PromptTemplate`: simple string-based prompt template.
    * `ChatPromptTemplate`: structured list of chat messages.
 
 3. **Chain**
-   The pipeline connecting multiple components (e.g., model + prompt + memory).
-   You can define chains using:
+   Connects multiple components (e.g., model + prompt + memory).
 
-   * **LCEL (LangChain Expression Language)** — for declarative composition.
-   * **Legacy Python classes** — for traditional object-oriented chaining.
+   * **LCEL (LangChain Expression Language)** — declarative syntax for chaining.
+   * **Legacy Python classes** — for traditional object-oriented composition.
 
 4. **Memory**
-   Stores and manages conversation history.
+   Maintains conversational context between turns.
 
-   * **Before execution:** The chain **reads** from memory to provide context.
-   * **After execution:** The chain **writes** the latest user and model messages back to memory.
+   * **Before execution:** Reads past interactions to provide context.
+   * **After execution:** Writes the latest exchanges back to memory.
 
 5. **Document Loaders**
-   Handle loading and preprocessing of data from various sources to make it usable by the model.
+   Import and preprocess external data for embedding or retrieval purposes.
+
 ![Template completion](/assets/images/immagine_2025-10-16_164835457.png)
 
 ---
 
 ### 📄 Document Loaders and Chunking
 
-Document loaders import and process data from a variety of sources — such as **PDF, HTML, CSV, JSON, or Markdown** — into a text format suitable for embedding or prompt input.
+Document loaders extract content from sources such as **PDF, HTML, CSV, JSON, or Markdown** files into plain text.
+After loading, documents are **split into smaller chunks**, a critical step that affects retrieval precision and model performance.
 
-Once documents are loaded, they are **split into smaller chunks**.
-Chunking is a crucial step that directly affects performance and accuracy:
+| Chunk Property    | Description                                                       |
+| ----------------- | ----------------------------------------------------------------- |
+| **Chunk Size**    | Must align with the LLM’s context window.                         |
+| **Chunk Overlap** | Preserves semantic continuity across chunks.                      |
+| **Splitter Type** | Defines how splits occur — by paragraph, sentence, or characters. |
 
-| Chunk Property    | Description                                                 |
-| ----------------- | ----------------------------------------------------------- |
-| **Chunk Size**    | Should align with the model’s context window.               |
-| **Chunk Overlap** | Ensures semantic continuity between chunks.                 |
-| **Splitter Type** | Can be paragraph-based, sentence-based, or character-based. |
-
-LangChain provides built-in splitters such as **`RecursiveCharacterTextSplitter`**.
+LangChain provides built-in utilities such as **`RecursiveCharacterTextSplitter`**.
 
 ---
 
@@ -64,13 +62,13 @@ LangChain provides built-in splitters such as **`RecursiveCharacterTextSplitter`
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-# Load the PDF
+# Load the PDF document
 pdf_loader = PyPDFLoader("document_path.pdf")
 text = ""
 for page in pdf_loader.load():
     text += page.page_content
 
-# Split text into chunks
+# Split text into manageable chunks
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=2000,
     chunk_overlap=100
@@ -82,30 +80,98 @@ chunks = text_splitter.split_text(text)
 
 ## 🧠 Integration with OCI Generative AI & Oracle 23AI
 
-LangChain includes community integrations for **Oracle Generative AI** and **Oracle Database 23AI**, enabling seamless use of OCI services within the LangChain ecosystem. We can use third party models for embedding or inside the Database23ai by downloading pre-trained embedding models, converting them in ONNX format.
+LangChain includes community integrations for **Oracle Generative AI** and **Oracle Database 23AI**, allowing you to use OCI’s enterprise AI capabilities directly within LangChain workflows.
 
-**Capabilities include:**
+These integrations enable developers to:
 
-1. **OCI Generative AI Models**
+* Use OCI’s **chat** and **embedding models** (Cohere / Meta) via REST APIs.
+* Store and query embeddings efficiently using **Oracle AI Vector Search**.
+* Generate SQL queries from natural language via **Oracle 23AI Select AI**.
 
-   * Access **chat** and **embedding** models from OCI via REST APIs.
-   * Leverage Cohere and Meta models directly within LangChain pipelines.
+> You can also integrate third-party pretrained embedding models into Oracle 23AI by converting them to **ONNX** format and deploying them directly within the database.
 
-2. **Oracle AI Vector Search**
+---
 
-   * Store and query vector embeddings efficiently.
-   * Supports **automatic embedding generation** from unstructured data.
-   * Provides utilities for **semantic similarity search** and **retrieval-augmented generation (RAG)**.
+### 🧱 Vector Data Type in Oracle 23AI
 
-3. **Oracle 23AI (Select AI)**
+Oracle Database 23AI introduces native **vector data type support**, storing embeddings efficiently as **BLOBs** in database tables.
 
-   * Translate **natural language queries** into SQL using LLM reasoning.
-   * Integrate with LangChain to build intelligent data agents that interact directly with Oracle databases.
+A typical integration workflow includes:
+
+1. **Connect to the database** using Python (username, password, and DSN).
+2. **Create document chunks** with metadata (e.g., ID, source, and text).
+3. **Convert** these into `Document` objects.
+4. **Generate embeddings** using the `OCIGenAIEmbeddings` class, specifying:
+
+   * Model ID (e.g., `cohere.embed-english-v3.0`)
+   * Endpoint and authentication type
+   * Compartment OCID
+5. **Create a knowledge base** using `OracleVS.from_documents(docs, embed_model, client, table_name, distance_strategy)`.
+
+---
+
+### 📐 Distance Measures
+
+When comparing embeddings, similarity can be measured using:
+
+1. **Dot Product** – Measures the projection magnitude of one vector onto another.
+   *Higher values indicate greater semantic similarity.*
+
+2. **Cosine Similarity** – Measures the angle between two vectors.
+   *Smaller angles (i.e., higher cosine values) imply closer meanings.*
+
+---
+
+### 🧭 Vector Indexing
+
+Vector indexes accelerate retrieval operations using advanced structures such as:
+
+* **HNSW (Hierarchical Navigable Small World graphs)**
+* **IVF (Inverted File Indexes)**
+
+These techniques reduce search space, enabling fast and scalable similarity lookups across millions of vectors.
+
+---
+
+## 💬 RAG with OCI Knowledge Base and Chat Model
+
+A typical **Retrieval-Augmented Generation (RAG)** flow in LangChain with OCI models involves:
+
+1. Defining a **Vector Store (OracleVS)** for similarity search.
+2. Configuring an **LLM** via `ChatOCIGenAI`.
+3. Creating a **RetrievalQA** chain to combine the two.
+
+```python
+vs = OracleVS(
+    embedding_function=embed_model,
+    client=conn,
+    table_name="knowledge_base",
+    distance_strategy="COSINE"
+)
+
+retriever = vs.as_retriever(search_type="similarity", search_kwargs={"k": 3})
+
+llm = ChatOCIGenAI(
+    model_id="cohere.command-r-plus",
+    service_endpoint=endpoint,
+    compartment_id="ocid1.compartment.oc1..exampleid",
+    auth_type="API_KEY",
+    model_kwargs={"max_tokens": 200}
+)
+
+chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    retriever=retriever,
+    return_source_documents=True
+)
+
+response = chain.invoke("Explain the benefits of fine-tuning a language model.")
+```
+
+To maintain **context awareness** during multi-turn conversations, LangChain also supports **conversational memory buffers** that retain dialogue history between user queries.
+
+---
+
+## 💬 Conversational RAG with Oracle Database 23AI
 
 
-### Vector data type
-In the Oracle 23 ai database we store the vector in the table as BLOB.
-We can connect to the db via python, with username, password, dns
-Create chunks of the document adding metadata as rows (a dict with id, link and text) converting everything in document object
-After doing so we connect to the OCIGenAIEmbeddings class, defining the model, endpoint, auth type and compartment id
-At last we create a knoweledge base ORacleVS.from_documents(docs, embed_model, client, table name, distance strategy)

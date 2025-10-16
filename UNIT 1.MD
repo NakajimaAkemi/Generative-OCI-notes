@@ -1,75 +1,139 @@
-# LLM basics
+# 🧠 Large Language Models (LLMs) — Overview
 
-## LLM Definition
-A language model is a probabilistic model of text, generating a token at a time selecting from a probability distribution of possible candidates. The term *large* refeers to the number of parameters.
+## 1. Definition
 
-> *Question*: "How do we affect the probability distribution?"
-> *Answer*: "We affect the probability distribution trough prompting and training."
+A **Language Model (LM)** is a probabilistic model of text that generates tokens one at a time, selecting each from a probability distribution over possible candidates.
+The term **“large”** refers to the number of parameters in the model.
 
-## LLM architectures
-Typically models are composed by *Encoders* and *Decoders* given the fact that they are built upon the *Transformer* architecture. Model come in different sizes (# of parameters) or for capabilities (embedding/generation).
+> **Question:** How do we affect the probability distribution?
+> **Answer:** We affect the probability distribution through **prompting** and **training**.
 
-### Encoder
-Encoder models convert a sequence of tokens to an embedding (vector representation).
+---
+
+## 2. LLM Architectures
+
+LLMs are typically based on the **Transformer** architecture and are composed of **Encoders** and/or **Decoders**.
+Models can vary by size (number of parameters) or capabilities (e.g., embeddings vs. generation).
+
+### 🧩 Encoder
+
+Encoders convert a sequence of tokens into an **embedding** (vector representation).
 ![Encoder](/assets/images/immagine_2025-10-15_180714834.png)
 
-### Decoder
-Decoders take a sequence of tokens and ouput the next one, designed for text generation.
+### 🔁 Decoder
+
+Decoders take a sequence of tokens and output the **next token**, designed primarily for **text generation**.
 ![Decoder](/assets/images/immagine_2025-10-15_181107207.png)
 
+### 🔄 Encoder + Decoder Example
 
-### Encoder + Decoder example
 ![Encoder+Decoder](/assets/images/immagine_2025-10-15_181308276.png)
 
-## Prompting 
-### Techniques
-Prompting(In-Context learning) consists in providing the LLM additional instructions in order to exer control over the probability distribution, eliciting a particular style of responses. There two techniques worth noting:
-1. K-shot promptinng: provide K examples in context window
-2. Chain of thought: Divide the request into subtasks and provide the LLM each step in the context in order to increase the accuracy
-3. Least to most: Instruct the LLM to decompose the problem and solve, easy first
-4. Step back: prompt the LLM to identify the high-level concepts pertinent to the specific task
+---
 
-### Safety issues
-One key risks of LLM is the *prompt injection* where LLM is deliberately provided with inputs that attempts to ignore instruction and/or behave contrary to the deployment. We need to make sure that the LLM does not leak personal data.
+## 3. Prompting
 
-## Decoding
-As we already know, decoding is the process where we predict the token step by step from the from the probability distribution of the vocabulary, there are many approaches:
-1. The naive method is *greedy* decoding, where we alwys choose the token wiht highest probabillity. 
-2. Non deterministic, we pick one random token between the high probability candidates.
+**Prompting (In-Context Learning)** consists of providing the LLM with additional instructions to influence its probability distribution — eliciting particular response styles or reasoning behaviors.
 
-### Factors
-1. Temperature: This parameter modulates the distribution over the vocabulary, a higher temperature "flattens" the distribution as the use of varied tokens is promoted.
-2. Top P: we select from the top and sum the probabilities until we reach p
-3. Top K: we select the first K possible tokens
+### ✍️ Techniques
 
+1. **K-shot prompting** — Provide *K* examples within the context window.
+2. **Chain of Thought (CoT)** — Divide the request into subtasks and show reasoning steps to improve accuracy.
+3. **Least-to-Most Prompting** — Instruct the LLM to decompose the problem and solve from easy to complex.
+4. **Step-Back Prompting** — Ask the LLM to identify high-level concepts before solving the task.
 
-## Training
-Prompting alone may not be enough for certain domain specific tasks, meaning that domain adaptation is needed
+### ⚠️ Safety Issues
+
+* **Prompt Injection:** Malicious inputs can attempt to override instructions or extract sensitive data.
+* Proper safeguards are needed to ensure that the LLM doesn’t leak private or confidential information.
+
+---
+
+## 4. Decoding
+
+**Decoding** is the process of generating text token by token from the model’s probability distribution.
+
+### 🧮 Methods
+
+1. **Greedy Decoding:** Always select the token with the highest probability.
+2. **Stochastic Decoding:** Randomly sample among the high-probability candidates for diversity.
+
+### ⚙️ Key Parameters
+
+* **Temperature:** Controls randomness — higher temperature flattens the distribution (more creative, less deterministic).
+* **Top-P (Nucleus Sampling):** Select tokens until cumulative probability ≥ *P*.
+* **Top-K:** Consider only the *K* highest-probability tokens.
+
+---
+
+## 5. Training
+
+Prompting alone may not be sufficient for **domain-specific** or **specialized** tasks — additional training or **fine-tuning** is often required.
+
 ![Table](/assets/images/immagine_2025-10-15_182525150.png)
 
+---
 
-## Rag
-When we make a domain specific request, the LLM rely solely on data that it has already seen, meaning if the LLM has not been trained on that domain it may say that it doesn't know or worse, be confidently wrong and provide factually unfounded replies, this phenomen is called *hallucination*. Each  generated text are evaluated in the following aspects:
-- Attributability:  The ability to attribute the answer to a certain source. 
-- Groundedness: How much it is grounded in a document. 
+## 6. Retrieval-Augmented Generation (RAG)
 
-### How RAG works
-This method can be trained end to end is non-parametric.
-The following steps:
-1. Ingestion: documents are divided into chunks, embedded in the vector space ready for fetching.
-2. Retrieval: We do a semating search from the prompt and find the semantically similar documents.
-3. Generation: We provide the documents to the context window and generate the response.
+LLMs can suffer from **hallucination** — confidently producing incorrect or unfounded answers when lacking relevant training data.
 
+### ✅ Evaluation Aspects
 
-## Code models
-Some models have been trained on code and comments such as Co-pilot and Code Llama and has beed largerly successful.
+* **Attributability:** Can the response be traced back to a specific source?
+* **Groundedness:** How well is the answer supported by retrieved documents?
 
-## Multi-Modal 
-These models are trained on multiple modalities, can be autoregressive such as DALL-E. Diffusion models can produce complex output simultaneously, rather than token by token which is difficult to apply to text because it's categorical, they exist but are not as popular. image-to-text, text-to-image or both.
+### 🔍 How RAG Works
 
-## Language agents 
-There some frameworks that allow to create LLM-based agents, capablee of tool usage, tkae action in response to plans and the enviroment.
-1. ReAct: Iterative framework emits a thougth and then reacts, and observe.
-2. ToolFormer: Pre-training technique where strings are replaced with calls to tool thet yield result.
-3. Bootstrapped reasoning: prompt the LLM to emit rationalization of intermediate steps, as fine tuning data
+RAG is a **non-parametric** approach that augments LLMs with external data sources.
 
+1. **Ingestion:** Documents are chunked, embedded, and stored in a vector database.
+2. **Retrieval:** Perform a **semantic search** based on the user prompt to find similar documents.
+3. **Generation:** Provide the retrieved context to the LLM to generate a grounded response.
+
+---
+
+## 7. Code Models
+
+Models like **GitHub Copilot** and **Code Llama** are trained on code and natural-language comments.
+They’ve been highly successful for **programming assistance** and **code completion**.
+
+---
+
+## 8. Multi-Modal Models
+
+**Multi-modal models** are trained on multiple input types — such as text, images, or audio.
+
+* **Autoregressive models** (e.g., DALL·E) generate outputs token by token.
+* **Diffusion models** generate complex outputs all at once, making them efficient for continuous data (like images) but less suited for text.
+
+**Examples:**
+
+* Text → Image
+* Image → Text
+* Multi-directional (both)
+
+---
+
+## 9. Language Agents
+
+Frameworks now enable LLM-based **agents** capable of **tool use**, **action-taking**, and **environment interaction**.
+
+### 🧠 Agent Frameworks
+
+1. **ReAct:** Alternates between reasoning (“thought”) and action, incorporating feedback from the environment.
+2. **ToolFormer:** Uses pre-training to replace text spans with tool calls that yield results.
+3. **Bootstrapped Reasoning:** Prompts the LLM to emit intermediate rationalizations used as fine-tuning data.
+
+---
+
+### ✅ Summary
+
+| Concept                    | Purpose                             |
+| -------------------------- | ----------------------------------- |
+| **Prompting**              | Steer model behavior in-context     |
+| **Decoding**               | Generate coherent text              |
+| **Training / Fine-tuning** | Adapt to new domains                |
+| **RAG**                    | Ground responses with external data |
+| **Multi-modal**            | Combine multiple data types         |
+| **Agents**                 | Enable reasoning and tool use       |

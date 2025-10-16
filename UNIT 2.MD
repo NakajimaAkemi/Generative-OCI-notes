@@ -1,26 +1,62 @@
-# OCI Generative service
-It's a fully managed service, meaning that it provides a set of customizable LLM available via API to build AI apps.
-Main features:
- - Choiche of Models: high performing pretrained models Meta and Cohere
- - Flexible fine tuning of these models
- - Dedicated AI cluster with their GPUs that host fine-tuning and inference workloads
+# ☁️ OCI Generative AI Service
 
-## Pretrained foundational chat models
- 1. command-r-plus (cohere): more powerful and expensive prompt up to 128k tokens, q&a, information retrival and sentiment analysi, response up to 4k tokens.
- 2. command-r-16k (cohere): 16k tokens, entry level use cases, response up to 4k tokens. For speed and cost.
- 3. llama 3-70b-instruct or 405b (meta): prompt response up to 128k tokens. The chat models keep track of the conversation and are instruction tuned models, the 405b model is the largest available and suited for enterprise apps.
+The **OCI Generative AI Service** is a **fully managed service** that provides a selection of customizable **large language models (LLMs)** available via API for building AI-powered applications.
 
-## Embedding models
-These models convert to tokens to machine understandable vectors.
- 1. embded-english-v3.0 (cohere):
- 2. embded-multilingual-v3.0 (cohere): 16k tokens, entry level use cases 
+---
 
-Semantinc vs Lexical, in the first we focus on the meaning instead of keywords.
-### Sematinc similarity
-Cosine and dot product similarity can be used to compute numerical similarity, numerically similar are semantically similar.
-### Sentence embeddings
-We can embed sentences where as likentokens, similar sentences are closer.
-### Embedding use case 
+## 🚀 Main Features
+
+* **Choice of Models:** High-performing pretrained models from *Meta* and *Cohere*.
+* **Flexible Fine-Tuning:** Adapt models to domain-specific data.
+* **Dedicated AI Clusters:** GPU-backed clusters hosting both fine-tuning and inference workloads.
+
+---
+
+## 🗣️ Pretrained Foundational Chat Models
+
+| Model                           | Provider | Context Window | Output Tokens | Description                                                                                                                      |
+| ------------------------------- | -------- | -------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| **command-r-plus**              | Cohere   | Up to 128K     | Up to 4K      | Powerful model for Q&A, information retrieval, and sentiment analysis. Higher cost and latency.                                  |
+| **command-r-16k**               | Cohere   | Up to 16K      | Up to 4K      | Entry-level use cases. Optimized for speed and cost efficiency.                                                                  |
+| **llama 3-70b-instruct / 405b** | Meta     | Up to 128K     | —             | Instruction-tuned models for conversational AI. The 405B model is the largest and best suited for enterprise-scale applications. |
+
+---
+
+## 🔡 Embedding Models
+
+Embedding models convert tokens into **numerical vector representations** for tasks like semantic search, classification, or clustering.
+
+| Model                              | Provider | Dimensionality | Max Tokens | Language Support        | Notes                   |
+| ---------------------------------- | -------- | -------------- | ---------- | ----------------------- | ----------------------- |
+| **embed-english-v3.0**             | Cohere   | 1024           | 512        | English                 | High-quality embeddings |
+| **embed-multilingual-v3.0**        | Cohere   | 1024           | 512        | 100+ languages          | Multilingual support    |
+| **embed-english-light-v2.0**       | Cohere   | 1024           | 512        | English                 | Lightweight version     |
+| **light (English / Multilingual)** | Cohere   | 384            | 512        | English or Multilingual | Compact and efficient   |
+
+---
+
+## 🔍 Semantic vs. Lexical Search
+
+* **Lexical Search:** Focuses on matching **keywords**.
+* **Semantic Search:** Focuses on **meaning**, using vector similarity rather than literal matches.
+
+### 🧮 Semantic Similarity
+
+Similarity between embeddings can be computed using:
+
+* **Cosine similarity**
+* **Dot product**
+
+Numerically similar vectors correspond to semantically similar meanings.
+
+### 🧱 Sentence Embeddings
+
+Entire sentences can be embedded — semantically similar sentences will have embeddings that are **close in vector space**.
+
+---
+
+### 🧠 Embedding Use Case (RAG Flow)
+
 ```mermaid
 flowchart LR
     A[User Question] --> B[Vector Database VDB]
@@ -29,52 +65,120 @@ flowchart LR
     D --> E[LLM Generates Informed Answer]
     E --> A
 ```
-## Finetuning
-We use finetuning for improving the model on specific tasks with our custom data and efficiency.
- 1. T-Few: fine tuning (cohere) for fast and efficient customization, selectes only a fraction
- 2. Vanilla finetuning: updates most/all the layers.
 
-## AI clusters
-Dedicated AI clusters are GPU based compute resource for custom fine tuning and inference.
-GenAI service establishes a dedicated AI cluster, whith GPUs and exclusive RDMA cluster network for connecting GPUs.
-GPUs pools of a customer are isolated.
+---
+
+## 🧩 Fine-Tuning
+
+Fine-tuning improves model performance for **specific tasks** using **custom data**.
+
+1. **T-Few (Cohere):** Efficient fine-tuning method that updates only a small subset of parameters.
+2. **Vanilla Fine-Tuning:** Updates most or all layers for maximum adaptability.
+
+---
+
+## ⚙️ AI Clusters
+
+Dedicated **AI clusters** are GPU-based compute resources for **custom fine-tuning** and **inference**.
+
+* Built on **exclusive RDMA cluster networks** for low-latency GPU communication.
+* Each customer’s GPU pool is **isolated** for performance and security.
+
 ![Cluster](/assets/images/immagine_2025-10-16_093903827.png)
 
-## OCI Generative AI
-In the service Analytics and AI service we find the Gen AI dashboard, we can customize the parameters:
-1. Top P
-2. Top K
-3. Temperature
-4. Preamble override: Intial guideline/context
-5. Frequency penalty
-6. Presence penalty: works the same but it penalizes regardless of the frequency.
-7. Max tokens.
+---
 
-For the embedding models we have
-1. Truncate
+## 📊 OCI Generative AI Dashboard
 
-### Model finetuning
-In the create model we can create our fine tuned model by giving a name, specify the model, method and 
-cluster if not already done. After doing so we need an endpoint for traffic, providing the cluster, model.
+Accessible through the **Analytics & AI service**, the GenAI dashboard allows customization of model and embedding parameters.
 
-### Dedicated AI cluster
+### 🔧 Model Parameters
 
-### Inference API
-We can dowload the code that connects to the model's API, connecting with the OCI sdk.
-1. Setup Auth params: we fetch the config file, and setup the compartment id
-2. define the endpoint
-3. Create the GenerativeAIInferenceClient, which is an object for connect to the Inference API, passing the confing, endpoint, retry strategy and timeout
-4. create ChatDetails for the preserving the request detail
-5. CohereChatRequest that specifies the input for gen ai model, defining the message and all the params (top k,..)
-6. Define the model in the ChatDetail Service mode, then pass the request and compartment id
-7. chat_response=generative_ai_inference_client.chat(chat_detail) 
-#### Config
-The config file contains
-1. User
-2. fingerpring
-3. tenancy
-4. region
-5. key_file    <-- directory of the private key .pem file (without it fails)
+1. **Top P:** Controls cumulative probability cutoff for token sampling.
+2. **Top K:** Limits sampling to top *K* most likely tokens.
+3. **Temperature:** Adjusts creativity/randomness of generation.
+4. **Preamble Override:** Provides initial context or style guidelines.
+5. **Frequency Penalty:** Reduces repetition of frequent tokens.
+6. **Presence Penalty:** Penalizes token reuse regardless of frequency.
+7. **Max Tokens:** Limits response length.
 
-For the setup we go to the user profile and find the api keys section, we click add api key, generate it
-private key and generate the config file
+### 📈 Embedding Model Parameters
+
+* **Truncate:** Manages token overflow by truncating input text.
+
+---
+
+## 🧠 Model Fine-Tuning Workflow
+
+1. **Create a Fine-Tuned Model:**
+
+   * Assign a name and select the base model.
+   * Choose the fine-tuning method (e.g., *T-Few* or *Vanilla*).
+   * Specify or create a dedicated AI cluster.
+
+2. **Deploy an Endpoint:**
+
+   * Define endpoint details for routing inference traffic.
+   * Associate with the desired model and cluster.
+
+---
+
+## 🧰 Inference API Integration
+
+The OCI Generative AI Service exposes an **Inference API** for programmatic access.
+
+### Steps
+
+1. **Set Up Authentication:**
+
+   * Retrieve the OCI **config file** and setup the **compartment ID**.
+
+2. **Define Endpoint:**
+
+   * Specify the model endpoint for inference.
+
+3. **Create a Client:**
+
+   ```python
+   from oci.generative_ai_inference import GenerativeAIInferenceClient
+   client = GenerativeAIInferenceClient(config, endpoint, retry_strategy, timeout)
+   ```
+
+4. **Create Request Objects:**
+
+   * `ChatDetails`: Holds request-level information.
+   * `CohereChatRequest`: Defines the prompt, parameters (Top K, etc.), and model settings.
+
+5. **Send Request:**
+
+   ```python
+   chat_response = client.chat(chat_details)
+   ```
+
+---
+
+### 🗂️ OCI Config File Structure
+
+| Key             | Description                    |
+| --------------- | ------------------------------ |
+| **user**        | User OCID                      |
+| **fingerprint** | Key fingerprint                |
+| **tenancy**     | Tenancy OCID                   |
+| **region**      | OCI region                     |
+| **key_file**    | Path to the private `.pem` key |
+
+> ⚙️ **Setup Tip:**
+> Go to *User Profile → API Keys → Add API Key* to generate a key pair and download your config file.
+
+---
+
+## 🧪 Embedding Models Demo
+
+*(To be completed)*
+
+---
+
+## 🖥️ Dedicated AI Cluster
+
+*(To be completed)*
+

@@ -207,7 +207,4 @@ print(embed_text_response.data)
 
 (todo)
 
----
-
-Would you like me to export this updated document as a **Markdown file (.md)** so you can integrate it directly into your repository or documentation system?
 

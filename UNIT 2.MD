@@ -45,3 +45,11 @@ In the create model we can create our fine tuned model by giving a name, specify
 cluster if not already done. After doing so we need an endpoint for traffic, providing the cluster, model.
 
 ### Dedicated AI cluster
+
+### Inference API
+We can dowload the code that connects to the model's API, connecting with the OCI sdk.
+1. Setup Auth params: we fetch the config file, and setup the compartment id
+2. define the endpoint
+3. Create the GenerativeAIInferenceClient, which is an object for connect to the Inference API
+4. create ChatDetails for the preserving the request detail
+5. CohereChatRequest that specifies the input for gen ai model, defining all the params (top k,..)

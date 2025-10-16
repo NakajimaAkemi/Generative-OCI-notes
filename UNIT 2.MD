@@ -274,3 +274,18 @@ Total cost (160+744 unit hours) * dedicated unit
 
 ### Setting up cluster
 In the Generative AI section you can setup the cluster, defining the model, if you're t few fine hosting you can host up to 50 models
+
+
+
+## Fine tuning configuration
+The training methods are Tfew and LoRa, the hyperparams are:
+1. Total training epochs: number of iterations (int 1-10)
+2. Learning rate: the rate of updating the model parameter (0.000005-0.1)
+3. Training batch size: number of samples processed (int 8-32)
+4. Early stopping patience: tolerance of stagnation in the loss metric (0 disable or int 1-16)
+5. Early stopping threshold: minmum loss reuqired to prevent early stopping
+6. Log Model metrics interval in steps: determines how frequently to log model metrics (loss and learning rate) set to 1
+
+### Evaluation
+1. Accuracy: how much the generated tokens match the annoted ones.
+2. Loss: how far is from the groundtruth, gets lower with epochs

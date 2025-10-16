@@ -44,11 +44,14 @@ Decoders take a sequence of tokens and output the **next token**, designed prima
 5. **zero-shot Chain of Thought** — Like CoT but without examples.
 
 #### Prompt format
+Llama 2 prompt can be formatd like the following for specific instructions.
 ```	
-Llama 2 prompt can be formatd like the following for specific instructions
 <<s>
 [INST]
-
+  <<SYS>>
+    {{system prompt}}
+  <</SYS>>
+    {{user_message}}
 [/INST]
 ```	
 ### ⚠️ Safety Issues

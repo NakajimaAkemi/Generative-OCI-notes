@@ -131,7 +131,15 @@ The OCI Generative AI Service exposes an **Inference API** for programmatic acce
 
 ## ⚙️ Configuration Setup (Shared)
 
-Before performing inference or embedding tasks, configure your OCI client and endpoint.
+Before using either the **chat (inference)** or **embedding** APIs, you must first configure the OCI SDK client and specify the inference endpoint.
+
+### 📝 Explanation
+
+This setup:
+
+* Loads your OCI authentication credentials from the local config file (`~/.oci/config`).
+* Defines the **Generative AI inference endpoint** corresponding to your OCI region.
+* Creates a client instance to interact with the Generative AI service.
 
 ```python
 import oci
@@ -154,11 +162,21 @@ generative_ai_inference_client = oci.generative_ai_inference.GenerativeAIInferen
 
 ## 💬 Inference API Demo
 
-This example shows how to call a **chat model** using the OCI Generative AI Inference API.
+### 📝 Explanation
+
+This example sends a **prompt** to a Cohere chat model (`command-r-plus`) and retrieves a generated response.
+You can adjust parameters such as:
+
+* **`temperature`** for randomness,
+* **`max_tokens`** for controlling output length,
+* **`model_id`** to choose a specific chat model.
+
+### 💻 Example
 
 ```python
 from oci.generative_ai_inference.models import ChatDetails
 
+# Define the chat request details
 chat_detail = ChatDetails(
     model_id="cohere.command-r-plus",
     input="What is the capital of France?",
@@ -166,6 +184,7 @@ chat_detail = ChatDetails(
     max_tokens=200
 )
 
+# Send request and print result
 chat_response = generative_ai_inference_client.chat(chat_detail)
 print("Chat Result:\n", chat_response.data)
 ```
@@ -174,7 +193,22 @@ print("Chat Result:\n", chat_response.data)
 
 ## 🔡 Embedding Models Demo
 
-Embedding models convert text into numerical vectors for similarity search, clustering, or semantic retrieval.
+### 📝 Explanation
+
+This section demonstrates how to **generate text embeddings** — numerical vector representations of text useful for:
+
+* Semantic search
+* Clustering
+* Similarity detection (e.g., "find texts with similar meaning")
+
+The script:
+
+1. Defines a list of text inputs (questions about capitals).
+2. Specifies an embedding model (`cohere.embed-english-v3.0`).
+3. Sends the request to OCI Generative AI.
+4. Returns embeddings as arrays of floating-point numbers.
+
+### 💻 Example
 
 ```python
 import oci
@@ -186,6 +220,7 @@ inputs = [
     "What is the capital of Canada?"
 ]
 
+# Configure embedding request
 embed_text_detail = oci.generative_ai_inference.models.EmbedTextDetails()
 embed_text_detail.serving_mode = oci.generative_ai_inference.models.OnDemandServingMode(
     model_id="cohere.embed-english-v3.0"
@@ -197,6 +232,7 @@ embed_text_detail.compartment_id = "ocid1.compartment.oc1..aaaaaaaexamplecompart
 # Generate embeddings
 embed_text_response = generative_ai_inference_client.embed_text(embed_text_detail)
 
+# Print the embedding vectors
 print("************************* Embed Texts Result *************************")
 print(embed_text_response.data)
 ```
@@ -206,5 +242,6 @@ print(embed_text_response.data)
 ## 🖥️ Dedicated AI Cluster
 
 (todo)
+
 
 

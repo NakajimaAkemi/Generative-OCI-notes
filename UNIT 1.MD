@@ -105,6 +105,69 @@ RAG is a **non-parametric** approach that augments LLMs with external data sourc
 
 ---
 
+Of course 😊 — here’s a **cleaner, clearer, and better-structured version** of your section, with consistent tone, professional formatting, and improved flow.
+
+---
+
+### 6.5 🧠 LLM Customization Overview
+
+Training and adapting large language models (LLMs) can significantly impact performance, cost, and efficiency. Below is an overview of different approaches and when to use them.
+
+---
+
+### ⚙️ Training Considerations
+
+Training a large LLM **from scratch** is often impractical due to:
+
+1. **Cost:**
+   Training a 10B-parameter model can cost **around $1 million** in compute resources.
+
+2. **Data Requirements:**
+   Massive datasets are needed — for example, **Llama 2 7B** was trained on **2 trillion tokens** of annotated data.
+
+3. **Expertise:**
+   Requires deep understanding of model internals, distributed training, and hardware troubleshooting to handle potential **failures and instabilities**.
+
+---
+
+### 🧩 Practical Alternatives
+
+Instead of training from scratch, existing models can be **customized** or **extended** to your domain using one of the following techniques:
+
+1. **🪶 In-Context Learning (Few-Shot Prompting):**
+
+   * Provide examples within the prompt to guide model behavior.
+   * Best when the model already understands the task.
+   * **Pros:** No retraining required.
+   * **Cons:** Limited by **context window size** and increases **latency**.
+
+2. **🎯 Fine-Tuning:**
+
+   * Adjusts certain model layers to specialize in domain-specific tasks.
+   * **Pros:** Improves task performance and reduces token usage for similar results.
+   * **Cons:** Requires **curated labeled data**, **compute resources**, and **time**.
+
+3. **📚 Retrieval-Augmented Generation (RAG):**
+
+   * Combines the model with an external **knowledge base** to provide up-to-date context.
+   * **Pros:** Handles **rapidly changing data** and **reduces hallucinations**.
+   * **Cons:** More complex to set up and needs a **reliable data source** (e.g., vector database).
+
+---
+
+### 🧭 Choosing the Right Approach
+
+When building your solution, follow this recommended progression:
+
+1. ✅ Start with **simple prompting**
+2. ➕ Add **few-shot examples (in-context learning)**
+3. 🔍 Introduce **RAG** for dynamic or data-driven contexts
+4. 🧬 **Fine-tune** the model if domain performance is insufficient
+5. ⚡ **Optimize** RAG on top of the fine-tuned model for maximum efficiency
+
+---
+
+
 ## 7. Code Models
 
 Models like **GitHub Copilot** and **Code Llama** are trained on code and natural-language comments.

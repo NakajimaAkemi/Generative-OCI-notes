@@ -23,7 +23,7 @@ We can embed sentences where as likentokens, similar sentences are closer.
 ### Embedding use case 
 ```mermaid
 flowchart LR
-    A[User Question] --> B[Vector Database (VDB)]
+    A[User Question] --> B[Vector Database \(VDB\)]
     B --> C[Retrieve Relevant Content]
     C --> D[Send Content to LLM]
     D --> E[LLM Generates Informed Answer]

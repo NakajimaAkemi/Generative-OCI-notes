@@ -11,11 +11,24 @@ Main features:
  3. llama 3-70b-instruct or 405b (meta): prompt response up to 128k tokens. The chat models keep track of the conversation and are instruction tuned models, the 405b model is the largest available and suited for enterprise apps.
 
 ## Embedding models
+These models convert to tokens to machine understandable vectors.
  1. embded-english-v3.0 (cohere):
  2. embded-multilingual-v3.0 (cohere): 16k tokens, entry level use cases 
 
 Semantinc vs Lexical, in the first we focus on the meaning instead of keywords.
-
+### Sematinc similarity
+Cosine and dot product similarity can be used to compute numerical similarity, numerically similar are semantically similar.
+### Sentence embeddings
+We can embed sentences where as likentokens, similar sentences are closer.
+### Embedding use case 
+```mermaid
+flowchart TD
+    A[User Question] --> B[Vector Database (VDB)]
+    B --> C[Retrieve Relevant Content (e.g., Matching Docs)]
+    C --> D[Send Retrieved Content to LLM]
+    D --> E[LLM Generates Informed Answer]
+    E --> A
+```
 ## Finetuning
 We use finetuning for improving the model on specific tasks with our custom data and efficiency.
  1. T-Few: fine tuning (cohere) for fast and efficient customization, selectes only a fraction

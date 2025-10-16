@@ -289,3 +289,20 @@ The training methods are Tfew and LoRa, the hyperparams are:
 ### Evaluation
 1. Accuracy: how much the generated tokens match the annoted ones.
 2. Loss: how far is from the groundtruth, gets lower with epochs
+
+
+## Fine tuning demo
+We have a json file that is composed of json object with properties "prompt" and "completion" both UTF8 encoded.
+We create the custom model from the Generative AI panel where we create the base model, the cluster that matches the base model and the finetuning method between tfew or vanilla, in the end some parameters. The fine tuning dataset file is uploaded in a bucket. Then we kick off the finetuning process with metrics loss/accuracy and have our custom model ready.
+
+### Endpoint for inference
+We create our endpoint with name, description the model amd a dedicated cluster (which with 50 tfew we can have up to 50 models), we can then toggle content moderation to avoid toxic and biased responses. We can make a few calls trough the OCI playground with a prompt.
+
+
+## OCI security
+Security and privacy of customer workloads are essential design tenet, the GPUs allocated for a cutomer's generative AI task are isolated from other GPUs. GPU cluster handle only the customer's models.
+Base model + finetuned model endpoints share the same cluster resource for the most efficient utilization of underlying GPUs. Onnly a customer's application can access the models created and hosted within the customer's tenancy.
+![Cluster isolation](/assets/images/immagine_2025-10-16_162912583.png)
+
+We can leverage the security services with IAM Authentication and Authoirizatio, for example we can autorize app x to access the custom model while app y to handle the base model. Key management store the model's keys and have allow access to the Gen AI object storage buckets that contain the models' weights.
+![Security](/assets/images/immagine_2025-10-16_163614382.png)

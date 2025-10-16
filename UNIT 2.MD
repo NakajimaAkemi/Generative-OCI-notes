@@ -22,12 +22,12 @@ Cosine and dot product similarity can be used to compute numerical similarity, n
 We can embed sentences where as likentokens, similar sentences are closer.
 ### Embedding use case 
 ```mermaid
-flowchart TD
+flowchart LR
     A[User Question] --> B[Vector Database (VDB)]
     B --> C[Retrieve Relevant Content]
     C --> D[Send Content to LLM]
     D --> E[LLM Generates Informed Answer]
-    E --> A[User Receives Answer]
+    E --> A
 
 ```
 ## Finetuning

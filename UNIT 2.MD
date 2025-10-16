@@ -50,6 +50,18 @@ cluster if not already done. After doing so we need an endpoint for traffic, pro
 We can dowload the code that connects to the model's API, connecting with the OCI sdk.
 1. Setup Auth params: we fetch the config file, and setup the compartment id
 2. define the endpoint
-3. Create the GenerativeAIInferenceClient, which is an object for connect to the Inference API
+3. Create the GenerativeAIInferenceClient, which is an object for connect to the Inference API, passing the confing, endpoint, retry strategy and timeout
 4. create ChatDetails for the preserving the request detail
-5. CohereChatRequest that specifies the input for gen ai model, defining all the params (top k,..)
+5. CohereChatRequest that specifies the input for gen ai model, defining the message and all the params (top k,..)
+6. Define the model in the ChatDetail Service mode, then pass the request and compartment id
+7. chat_response=generative_ai_inference_client.chat(chat_detail) 
+#### Config
+The config file contains
+1. User
+2. fingerpring
+3. tenancy
+4. region
+5. key_file    <-- directory of the private key .pem file (without it fails)
+
+For the setup we go to the user profile and find the api keys section, we click add api key, generate it
+private key and generate the config file

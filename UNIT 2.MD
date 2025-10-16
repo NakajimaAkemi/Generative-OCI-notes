@@ -127,58 +127,87 @@ Accessible through the **Analytics & AI service**, the GenAI dashboard allows cu
 
 The OCI Generative AI Service exposes an **Inference API** for programmatic access.
 
-### Steps
+---
 
-1. **Set Up Authentication:**
+## ⚙️ Configuration Setup (Shared)
 
-   * Retrieve the OCI **config file** and setup the **compartment ID**.
+Before performing inference or embedding tasks, configure your OCI client and endpoint.
 
-2. **Define Endpoint:**
+```python
+import oci
 
-   * Specify the model endpoint for inference.
+# Load basic configuration
+CONFIG_PROFILE = "DEFAULT"
+config = oci.config.from_file("~/.oci/config", CONFIG_PROFILE)
 
-3. **Create a Client:**
+# Define the Generative AI inference endpoint
+endpoint = "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com"
 
-   ```python
-   from oci.generative_ai_inference import GenerativeAIInferenceClient
-   client = GenerativeAIInferenceClient(config, endpoint, retry_strategy, timeout)
-   ```
-
-4. **Create Request Objects:**
-
-   * `ChatDetails`: Holds request-level information.
-   * `CohereChatRequest`: Defines the prompt, parameters (Top K, etc.), and model settings.
-
-5. **Send Request:**
-
-   ```python
-   chat_response = client.chat(chat_details)
-   ```
+# Create a Generative AI Inference client
+generative_ai_inference_client = oci.generative_ai_inference.GenerativeAIInferenceClient(
+    config=config,
+    service_endpoint=endpoint
+)
+```
 
 ---
 
-### 🗂️ OCI Config File Structure
+## 💬 Inference API Demo
 
-| Key             | Description                    |
-| --------------- | ------------------------------ |
-| **user**        | User OCID                      |
-| **fingerprint** | Key fingerprint                |
-| **tenancy**     | Tenancy OCID                   |
-| **region**      | OCI region                     |
-| **key_file**    | Path to the private `.pem` key |
+This example shows how to call a **chat model** using the OCI Generative AI Inference API.
 
-> ⚙️ **Setup Tip:**
-> Go to *User Profile → API Keys → Add API Key* to generate a key pair and download your config file.
+```python
+from oci.generative_ai_inference.models import ChatDetails
+
+chat_detail = ChatDetails(
+    model_id="cohere.command-r-plus",
+    input="What is the capital of France?",
+    temperature=0.7,
+    max_tokens=200
+)
+
+chat_response = generative_ai_inference_client.chat(chat_detail)
+print("Chat Result:\n", chat_response.data)
+```
 
 ---
 
-## 🧪 Embedding Models Demo
+## 🔡 Embedding Models Demo
 
-*(To be completed)*
+Embedding models convert text into numerical vectors for similarity search, clustering, or semantic retrieval.
+
+```python
+import oci
+
+# Using the same configuration and client from above
+inputs = [
+    "What is the capital of France?",
+    "What is the capital of Sweden?",
+    "What is the capital of Canada?"
+]
+
+embed_text_detail = oci.generative_ai_inference.models.EmbedTextDetails()
+embed_text_detail.serving_mode = oci.generative_ai_inference.models.OnDemandServingMode(
+    model_id="cohere.embed-english-v3.0"
+)
+embed_text_detail.inputs = inputs
+embed_text_detail.truncate = "NONE"
+embed_text_detail.compartment_id = "ocid1.compartment.oc1..aaaaaaaexamplecompartmentid"
+
+# Generate embeddings
+embed_text_response = generative_ai_inference_client.embed_text(embed_text_detail)
+
+print("************************* Embed Texts Result *************************")
+print(embed_text_response.data)
+```
 
 ---
 
 ## 🖥️ Dedicated AI Cluster
 
-*(To be completed)*
+(todo)
+
+---
+
+Would you like me to export this updated document as a **Markdown file (.md)** so you can integrate it directly into your repository or documentation system?
 

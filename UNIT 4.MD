@@ -53,12 +53,35 @@ This is a user defined function returns vector search result feom each query:
 
 Requirements:
 1. The embedding model that you use for the function query field must the same that transforms the body to embedding
-2. Function return fields must match the table
+2. Function return fields must match the table's required
 3. If the function returns field names that don't match the table field names, you must use aliases
 
+As show below this is the function:
 ![SQL function](/assets/images/immagine_2025-10-17_155648509.png)
 
+It selects the DOCID, BODY and VECTOR DISTANCE, which it sorts by it and then fetches the top k we define earlier.
+
 ### Knowledge base defition
-1. We define a data source, which is based on a data bucket with files we want, we can select one or all
+1. We define a data source, which is based on a data bucket with files we want, we can select one or more
 2. E setup the vector search type
 3. Create an Agent Welcome message and knowledge base 
+4. We can also allow hybrid search
+5. We can then toggle the Oracle23ai support for vector search and select the search function
+
+### Agent definition
+1. We put name, compartment, welcome message, instructions
+2. Add Knowledge bases if needed
+
+## Endpoint definition
+1. Name, description
+2. Session timeout
+3. Content moderation for input and or output
+4. Enable trace and citation
+
+## Limitations per tenancy
+1. Agent: there is a agent-count that is the max number of agents per tenancy that is 2
+2. Knowledge base: knowledge-base-count the max number is 3 per tenancy
+3. Endpoint: agent-endpoint-per-agent-count is 3
+4. Max Number of files in a data source for each injection job is 1000 (number-of-files-per-data-source-count)
+
+

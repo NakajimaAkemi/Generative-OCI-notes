@@ -1,87 +1,145 @@
-# OCI Generative AI agent
-This platform allows us to create AI agents, leveraging on knowledge bases.
+# **OCI Generative AI Agent Overview**
 
-The overall architecture
-1. Interface that interacts with the user as message/command
-2. Short/Long term memory for context 
-3. LLM does Reasoning, Planning(multi step processes), Persona(tone style) and Acting
-4. Tools: APIs, DBs etc..
-5. Prompt: specific query provided by user
-6. Knowledge base
+Oracle Cloud Infrastructure (OCI) Generative AI Agents enable the creation of intelligent agents that leverage knowledge bases for context-aware, grounded, and explainable responses.
 
-## Agent concepts
-1. Generative model: LLM
-2. Agent: autonomous system that understands and generate human like text with high answerability and groundedness
-3. Knowledge base: VDB to connect and ingest data from data source
-4. Data source and store: Data sources provide connection information to the data store that an agent uses to generate responses.
-5. Data ingestion: A process that extracts data from data source documents, converts into structured format suitable for analysis then store in the knowledge base.
-6. Session: A series of exchanges where the user sends queries and the agent responds
-7. Agent endpoint: specific endpoint in the network/system
-8. Trace: Tracks conversations and agent responses.
-9. Citation: Source of the information in RAG
-10. Content moderation: filters abusive/harmful content from generated responses or user prompts in LLM
+---
 
-## Object store guideline
-1. Data source: data for generative ai agents uploaded as Object Storage Buckets
-2. Buckets: One bucket per data source
-3. File type and size: Only PDF and txt files supported and no larger than 100MB.
-4. PDF content: Files can have images, chats,, and reference tables but must not exceed 8MB
-5. Chart: No special preparation is needed for charts as long they're two diemensional
-6. Table: Use reference tables with several rows and columns
-7. URLs: all hyperlinks in the PDF are extraced and displayed as hyperlinks in the chat response
-8. Data not ready: if your data isn't yet available, create an empty folder for the data source and populate it later, so that we set it in advance
+## **1. Overall Architecture**
 
-## Database requirements
-Generative AI Agents don't manage the db they connect to it.
+| Component                  | Description                                                                                                    |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Interface**              | Handles user interactions through messages or commands.                                                        |
+| **Memory**                 | Maintains short-term and long-term context across sessions.                                                    |
+| **LLM (Generative Model)** | Performs reasoning, planning (multi-step tasks), persona shaping (tone/style), and acting (executing actions). |
+| **Tools**                  | APIs, databases, and external systems connected for agent actions.                                             |
+| **Prompt**                 | The specific user query or instruction.                                                                        |
+| **Knowledge Base**         | The structured, retrievable data source grounding the agent’s responses.                                       |
 
-Required fields:
- 1. DOCID
- 2. BODY
- 3. VECTOR
+---
 
-Optional:
- 1. CHUNKID: id in case the document is larger than 512 tokens.
- 2. URL of reference
- 3. TITLE
- 4. PAGE_NUMBERS
+## **2. Core Concepts**
 
+| Concept                      | Description                                                                                         |
+| ---------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Generative Model (LLM)**   | The large language model that generates human-like responses.                                       |
+| **Agent**                    | The autonomous system that understands and generates text with high answerability and groundedness. |
+| **Knowledge Base (VDB)**     | Vector database that stores structured data embeddings for retrieval.                               |
+| **Data Source / Data Store** | The location from which the agent ingests and accesses data.                                        |
+| **Data Ingestion**           | The process of extracting, transforming, and loading data into the knowledge base.                  |
+| **Session**                  | A continuous exchange of messages between a user and the agent.                                     |
+| **Agent Endpoint**           | The specific network endpoint used to interact with the agent.                                      |
+| **Trace**                    | A tracking mechanism that logs conversation history and agent reasoning.                            |
+| **Citation**                 | References the source of retrieved information in RAG (Retrieval-Augmented Generation).             |
+| **Content Moderation**       | Filters and removes harmful or inappropriate content from inputs or outputs.                        |
 
-## Function query
-This is a user defined function returns vector search result feom each query:
-- p_query: Query String
-- top_k
+---
 
-Requirements:
-1. The embedding model that you use for the function query field must the same that transforms the body to embedding
-2. Function return fields must match the table's required
-3. If the function returns field names that don't match the table field names, you must use aliases
+## **3. Object Store Guidelines**
 
-As show below this is the function:
-![SQL function](/assets/images/immagine_2025-10-17_155648509.png)
+| Item                     | Requirement                                                       |
+| ------------------------ | ----------------------------------------------------------------- |
+| **Data Source**          | Each data source is stored as an Object Storage bucket.           |
+| **Buckets**              | One bucket per data source.                                       |
+| **Supported File Types** | `.pdf` and `.txt` only.                                           |
+| **File Size Limit**      | Maximum 100 MB per file.                                          |
+| **PDF Content Rules**    | Images, charts, and tables allowed; total file size ≤ 8 MB.       |
+| **Charts**               | Two-dimensional charts supported without special preparation.     |
+| **Tables**               | Use reference tables with multiple rows and columns.              |
+| **URLs**                 | Hyperlinks in PDFs are extracted and displayed in chat responses. |
+| **Empty Data Sources**   | You can create empty folders for future data ingestion.           |
 
-It selects the DOCID, BODY and VECTOR DISTANCE, which it sorts by it and then fetches the top k we define earlier.
+---
 
-### Knowledge base defition
-1. We define a data source, which is based on a data bucket with files we want, we can select one or more
-2. E setup the vector search type
-3. Create an Agent Welcome message and knowledge base 
-4. We can also allow hybrid search
-5. We can then toggle the Oracle23ai support for vector search and select the search function
+## **4. Database Requirements**
 
-### Agent definition
-1. We put name, compartment, welcome message, instructions
-2. Add Knowledge bases if needed
+Generative AI Agents **do not manage the database** directly—they connect to existing databases.
 
-## Endpoint definition
-1. Name, description
-2. Session timeout
-3. Content moderation for input and or output
-4. Enable trace and citation
+### **Required Fields**
 
-## Limitations per tenancy
-1. Agent: there is a agent-count that is the max number of agents per tenancy that is 2
-2. Knowledge base: knowledge-base-count the max number is 3 per tenancy
-3. Endpoint: agent-endpoint-per-agent-count is 3
-4. Max Number of files in a data source for each injection job is 1000 (number-of-files-per-data-source-count)
+* `DOCID`
+* `BODY`
+* `VECTOR`
 
+### **Optional Fields**
+
+* `CHUNKID` — for splitting large documents (>512 tokens)
+* `URL` — reference source
+* `TITLE` — document title
+* `PAGE_NUMBERS` — location of extracted text
+
+---
+
+## **5. Function Query**
+
+A **user-defined SQL function** that performs vector search operations on the knowledge base.
+
+### **Parameters**
+
+* `p_query`: Query string input.
+* `top_k`: Number of top results to return.
+
+### **Requirements**
+
+1. The **embedding model** used in the query must match the one used to generate document embeddings.
+2. The **function’s output fields** must align with the table’s required fields.
+3. If field names differ, **use aliases** to ensure compatibility.
+
+### **Example Function**
+
+The SQL function retrieves:
+
+* `DOCID`,
+* `BODY`,
+* `VECTOR_DISTANCE`,
+  then **sorts results** by vector distance and returns the top *K* matches.
+
+---
+
+## **6. Knowledge Base Definition**
+
+Steps to create a knowledge base:
+
+1. **Define Data Source** — Select one or more Object Storage buckets containing the data.
+2. **Set Vector Search Type** — Choose the vector retrieval configuration.
+3. **Create Agent Welcome Message** — Define the greeting and tone.
+4. **Enable Hybrid Search (Optional)** — Combine keyword and vector-based retrieval.
+5. **Enable Oracle 23AI Support (Optional)** — For enhanced vector search.
+6. **Select Search Function** — Assign the vector search SQL function.
+
+---
+
+## **7. Agent Definition**
+
+When defining an agent:
+
+1. Provide **name**, **compartment**, **welcome message**, and **instructions**.
+2. Add one or more **knowledge bases** as needed.
+3. Configure **persona** and **behavioral parameters**.
+
+---
+
+## **8. Endpoint Definition**
+
+| Parameter              | Description                                         |
+| ---------------------- | --------------------------------------------------- |
+| **Name / Description** | Identifier for the endpoint.                        |
+| **Session Timeout**    | Maximum idle duration for a session.                |
+| **Content Moderation** | Enable for input, output, or both.                  |
+| **Trace & Citation**   | Optionally enable for debugging and explainability. |
+
+---
+
+## **9. Tenancy Limits**
+
+| Item                                          | Limit per Tenancy |
+| --------------------------------------------- | ----------------- |
+| **Agents**                                    | 2                 |
+| **Knowledge Bases**                           | 3                 |
+| **Endpoints per Agent**                       | 3                 |
+| **Files per Data Source (per ingestion job)** | 1,000             |
+
+---
+
+✅ **Summary:**
+The OCI Generative AI Agent framework integrates LLMs, knowledge bases, and object storage to deliver contextually aware and explainable AI systems. It follows a modular architecture combining reasoning, memory, and external data access, all within defined OCI limits.
 

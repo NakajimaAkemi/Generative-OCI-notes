@@ -71,27 +71,65 @@ Generative AI Agents **do not manage the database** directly—they connect to e
 
 ## **5. Function Query**
 
-A **user-defined SQL function** that performs vector search operations on the knowledge base.
+A **user-defined SQL function** performs **vector search** over the embeddings stored in the knowledge base.
 
 ### **Parameters**
 
-* `p_query`: Query string input.
-* `top_k`: Number of top results to return.
+* **`p_query`** — Query string input
+* **`top_k`** — Number of top results to return
 
 ### **Requirements**
 
-1. The **embedding model** used in the query must match the one used to generate document embeddings.
-2. The **function’s output fields** must align with the table’s required fields.
-3. If field names differ, **use aliases** to ensure compatibility.
+1. The **embedding model** used in the query must be the same model used to generate the document vectors.
+2. The **function output fields** must match the table’s required fields (`DOCID`, `BODY`, `VECTOR`).
+3. If your field names differ, use **aliases** to ensure consistency.
 
-### **Example Function**
+### **Example SQL Function**
 
-The SQL function retrieves:
+Below is an example function definition for vector search:
 
-* `DOCID`,
-* `BODY`,
-* `VECTOR_DISTANCE`,
-  then **sorts results** by vector distance and returns the top *K* matches.
+```sql
+-- Create function from vector table
+-- When returning results, rename (alias) the record ID as ‘DOCID’, 
+-- the content column as ‘BODY’, and the VECTOR_DISTANCE as ‘SCORE’
+
+CREATE OR REPLACE FUNCTION retrieval_func_ai (
+    p_query IN VARCHAR2,
+    top_k IN NUMBER
+) RETURN SYS_REFCURSOR
+IS
+    v_results SYS_REFCURSOR;
+    query_vec VECTOR;
+BEGIN
+    -- Generate vector embedding for the query
+    query_vec := vector_utl.to_embedding(
+        json('{
+            "provider": "OCIGenAI",
+            "credential": "OCI_CRED",
+            "url": "https://inference.generativeai.eu-frankfurt-1.oci.oraclecloud.com/20231113/actions/embedText",
+            "model": "oracle.embed-multilingual-v3.0"
+        }'),
+        p_query
+    );
+
+    -- Perform vector search
+    OPEN v_results FOR
+        SELECT DOCID, BODY, VECTOR_DISTANCE(text_vec, query_vec) AS SCORE
+        FROM my_vector_table
+        ORDER BY SCORE
+        FETCH FIRST top_k ROWS ONLY;
+
+    RETURN v_results;
+END;
+/
+```
+
+### **Explanation**
+
+* The function converts the query string into an embedding vector using OCI’s **embedText API**.
+* It calculates **VECTOR_DISTANCE** between the query vector and the document vectors stored in the database.
+* Results are **sorted by similarity score** and **limited to the top K** most relevant entries.
+
 
 ---
 

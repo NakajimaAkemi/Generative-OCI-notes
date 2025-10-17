@@ -194,6 +194,26 @@ At any point we can specify the compartment type for our policies
 > To delete a Knowledge base taht are used by agents but first you must delete the data sources and delete the agents that use the data sources, the deletion cannot be undone
 > The agents cannot respond on data of delete KB
 
-## Chatbot with Oracle23ai
+## Chatbot with Oracle23ai data store
+Database definition:
+1. On Oracle Cloud we can define our autonomous database
+2. Provide compartment info display name and actual name, the data warehouse workload type (used for decision support, but there is also Transaction processing, JSON and APEX types)
+2. Deployment type: in our case serverless (or dedicated infrastructure)
+3. Use the 23ai version (default is 19c), ECPU 2 and Storage 1TB
+4. Backup retention is 60 days
+5. Define the Admin credentials
+6. Network access: Secure access from everywhere (with credentials), from allowed ips and VCN or private endpint only OCI VCN, we select the third
+7. Put the VCN we define beforehand and the subnet (mutual TLS not needed)
+8. Valid email for notifications
+
+After doing so:
+1. Select our Autonomous DB from the dashboard and fetch the connection string (the port is 1521-1522)
+2. Get the private endpoint IP
+3. We go to database tools and create a connection 
+4. Provide a name, the compartment, our autonoumous database and provide the ADMIN credentials
+5. We create a password secret which must be the same of the autonomous system we created, selecting the vault and ecryption key
+6. After all this we fetch the connection string
+7. In this moment we have 2 connection strings, which we replace the host of the first with the private endpoint ip
+8. When we define the Knowledge base we link the Oracle23ai autonomous database
 
 

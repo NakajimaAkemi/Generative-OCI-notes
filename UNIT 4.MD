@@ -56,6 +56,7 @@ Requirements:
 2. Function return fields must match the table
 3. If the function returns field names that don't match the table field names, you must use aliases
 
+![SQL function](/assets/images/immagine_2025-10-17_155648509.png)
 
 ### Knowledge base defition
 1. We define a data source, which is based on a data bucket with files we want, we can select one or all

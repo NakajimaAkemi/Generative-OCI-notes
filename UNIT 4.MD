@@ -183,9 +183,17 @@ The process of agent setup is the following
 1. Create a Knowledge base (define the object storage type), we can togle the hybrid search (lexical + semantical) it does lexical first and then re ranks with semantical otherwise it only does lexical, define the data source)
 2. Define the data source, we can choose multimodal parsing for charts parsing, we can select the bucket and decide which document to use in the bucket or more, we can then toggle the automatic ingestion process, if it fails we can restart the job, the successfull ones are skipped (injection jobs are creating state then to active once ready) 
 2. Setup the agent
-3. Setup the endpoint
+3. Setup the endpoint: content moderation is not toggled on default, the trace and citation yes max sesion is 3600 seconds (1 hour to max 7 days), if not defined you cannot edit it later
 
 At any point we can specify the compartment type for our policies
 
 > [!NOTE]
-> When looking at Knowledge bases, we can see the data source and check the status and logs of injection jobs
+> When looking at Knowledge bases, we can see the data source and check the status and logs of injection jobs, 
+> you can delete the jobs that are in waiting or in progress states
+> Only ONE data source per Knowledge base, you update a data source
+> To delete a Knowledge base taht are used by agents but first you must delete the data sources and delete the agents that use the data sources, the deletion cannot be undone
+> The agents cannot respond on data of delete KB
+
+## Chatbot with Oracle23ai
+
+

@@ -169,12 +169,12 @@ When defining an agent:
 
 ## **9. Tenancy Limits**
 
-| Item                                          | Limit per Tenancy |
-| --------------------------------------------- | ----------------- |
-| **Agents**                                    | 2                 |
-| **Knowledge Bases**                           | 3                 |
-| **Endpoints per Agent**                       | 3                 |
-| **Files per Data Source (per ingestion job)** | 1,000             |
+| Item                                          | Paremeter name                          | Limit per Tenancy |
+| --------------------------------------------- | --------------------------------------- | ----------------- |
+| **Agents**                                    | `agent-count`                           | 2                 |
+| **Knowledge Bases**                           | `knowledge-base-count`                  | 3                 |
+| **Endpoints per Agent**                       | `agent-endpoint-per-agent-count`        | 3                 |
+| **Files per Data Source (per ingestion job)** | `number-of-files-per-data-source-count` | 1,000             |
 
 ---
 

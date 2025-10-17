@@ -52,7 +52,7 @@ Oracle Cloud Infrastructure (OCI) Generative AI Agents enable the creation of in
 
 ## **4. Database Requirements**
 
-Generative AI Agents **do not manage the database** directly—they connect to existing databases.
+Generative AI Agents **do not manage the database** directly — they connect to existing ones.
 
 ### **Required Fields**
 
@@ -71,7 +71,7 @@ Generative AI Agents **do not manage the database** directly—they connect to e
 
 ## **5. Function Query**
 
-A **user-defined SQL function** performs **vector search** over the embeddings stored in the knowledge base.
+A **user-defined SQL function** performs **vector search** over embeddings stored in the knowledge base.
 
 ### **Parameters**
 
@@ -80,13 +80,13 @@ A **user-defined SQL function** performs **vector search** over the embeddings s
 
 ### **Requirements**
 
-1. The **embedding model** used in the query must be the same model used to generate the document vectors.
+1. The **embedding model** used in the query must be the same as the one used to generate the document vectors.
 2. The **function output fields** must match the table’s required fields (`DOCID`, `BODY`, `VECTOR`).
-3. If your field names differ, use **aliases** to ensure consistency.
+3. If field names differ, use **aliases** for consistency.
+
+---
 
 ### **Example SQL Function**
-
-Below is an example function definition for vector search:
 
 ```sql
 -- Create function from vector table
@@ -126,23 +126,22 @@ END;
 
 ### **Explanation**
 
-* The function converts the query string into an embedding vector using OCI’s **embedText API**.
-* It calculates **VECTOR_DISTANCE** between the query vector and the document vectors stored in the database.
-* Results are **sorted by similarity score** and **limited to the top K** most relevant entries.
-
+* The query is converted into an embedding using the **OCI embedText API**.
+* **VECTOR_DISTANCE** computes similarity between the query vector and stored document vectors.
+* Results are ranked by similarity score and limited to the **top K** most relevant entries.
 
 ---
 
 ## **6. Knowledge Base Definition**
 
-Steps to create a knowledge base:
+Steps to create a Knowledge Base:
 
-1. **Define Data Source** — Select one or more Object Storage buckets containing the data.
-2. **Set Vector Search Type** — Choose the vector retrieval configuration.
-3. **Create Agent Welcome Message** — Define the greeting and tone.
-4. **Enable Hybrid Search (Optional)** — Combine keyword and vector-based retrieval.
-5. **Enable Oracle 23AI Support (Optional)** — For enhanced vector search.
-6. **Select Search Function** — Assign the vector search SQL function.
+1. **Define Data Source** — Select Object Storage buckets containing your data.
+2. **Set Vector Search Type** — Configure the retrieval method.
+3. **Create Welcome Message** — Define greeting and conversational tone.
+4. **Enable Hybrid Search (Optional)** — Combine lexical and vector-based retrieval.
+5. **Enable Oracle 23AI Support (Optional)** — For advanced vector search.
+6. **Select Search Function** — Assign the SQL function for retrieval.
 
 ---
 
@@ -158,18 +157,18 @@ When defining an agent:
 
 ## **8. Endpoint Definition**
 
-| Parameter              | Description                                         |
-| ---------------------- | --------------------------------------------------- |
-| **Name / Description** | Identifier for the endpoint.                        |
-| **Session Timeout**    | Maximum idle duration for a session.                |
-| **Content Moderation** | Enable for input, output, or both.                  |
-| **Trace & Citation**   | Optionally enable for debugging and explainability. |
+| Parameter              | Description                              |
+| ---------------------- | ---------------------------------------- |
+| **Name / Description** | Identifier for the endpoint.             |
+| **Session Timeout**    | Maximum idle duration for a session.     |
+| **Content Moderation** | Enable for input, output, or both.       |
+| **Trace & Citation**   | Enable for explainability and debugging. |
 
 ---
 
 ## **9. Tenancy Limits**
 
-| Item                                          | Paremeter name                          | Limit per Tenancy |
+| Item                                          | Parameter Name                          | Limit per Tenancy |
 | --------------------------------------------- | --------------------------------------- | ----------------- |
 | **Agents**                                    | `agent-count`                           | 2                 |
 | **Knowledge Bases**                           | `knowledge-base-count`                  | 3                 |
@@ -178,42 +177,70 @@ When defining an agent:
 
 ---
 
-## Chatbot with Object Store
-The process of agent setup is the following
-1. Create a Knowledge base (define the object storage type), we can togle the hybrid search (lexical + semantical) it does lexical first and then re ranks with semantical otherwise it only does lexical, define the data source)
-2. Define the data source, we can choose multimodal parsing for charts parsing, we can select the bucket and decide which document to use in the bucket or more, we can then toggle the automatic ingestion process, if it fails we can restart the job, the successfull ones are skipped (injection jobs are creating state then to active once ready) 
-2. Setup the agent
-3. Setup the endpoint: content moderation is not toggled on default, the trace and citation yes max sesion is 3600 seconds (1 hour to max 7 days), if not defined you cannot edit it later
+## **10. Chatbot with Object Store**
 
-At any point we can specify the compartment type for our policies
+### **Setup Process**
+
+1. **Create a Knowledge Base** — Define Object Storage as the data source.
+
+   * Toggle **Hybrid Search** (lexical + semantic).
+   * Define the data source configuration.
+2. **Define the Data Source**
+
+   * Optionally enable **multimodal parsing** for charts.
+   * Select the storage bucket and documents to include.
+   * Enable **automatic ingestion** (failed jobs can be restarted).
+   * Jobs move from *creating* → *active* when complete.
+3. **Set Up the Agent**
+4. **Set Up the Endpoint**
+
+   * Content moderation is **off by default**.
+   * Trace and citation are **enabled by default**.
+   * Maximum session: **3600 seconds (1 hour)**, up to **7 days**.
+   * Once defined, endpoint parameters cannot be edited later.
+
+At any stage, specify the **compartment** for access and policy management.
 
 > [!NOTE]
-> When looking at Knowledge bases, we can see the data source and check the status and logs of injection jobs, 
-> you can delete the jobs that are in waiting or in progress states
-> Only ONE data source per Knowledge base, you update a data source
-> To delete a Knowledge base taht are used by agents but first you must delete the data sources and delete the agents that use the data sources, the deletion cannot be undone
-> The agents cannot respond on data of delete KB
+>
+> * You can monitor Knowledge Base ingestion job status and logs.
+> * Delete jobs that are *waiting* or *in progress* if needed.
+> * Only **one data source** per Knowledge Base.
+> * To delete a Knowledge Base, first remove associated data sources and agents.
+> * Deletions are **irreversible**.
+> * Agents cannot respond using deleted Knowledge Bases.
 
-## Chatbot with Oracle23ai data store
-Database definition:
-1. On Oracle Cloud we can define our autonomous database
-2. Provide compartment info display name and actual name, the data warehouse workload type (used for decision support, but there is also Transaction processing, JSON and APEX types)
-2. Deployment type: in our case serverless (or dedicated infrastructure)
-3. Use the 23ai version (default is 19c), ECPU 2 and Storage 1TB
-4. Backup retention is 60 days
-5. Define the Admin credentials
-6. Network access: Secure access from everywhere (with credentials), from allowed ips and VCN or private endpint only OCI VCN, we select the third
-7. Put the VCN we define beforehand and the subnet (mutual TLS not needed)
-8. Valid email for notifications
+---
 
-After doing so:
-1. Select our Autonomous DB from the dashboard and fetch the connection string (the port is 1521-1522)
-2. Get the private endpoint IP
-3. We go to database tools and create a connection 
-4. Provide a name, the compartment, our autonoumous database and provide the ADMIN credentials
-5. We create a password secret which must be the same of the autonomous system we created, selecting the vault and ecryption key
-6. After all this we fetch the connection string
-7. In this moment we have 2 connection strings, which we replace the host of the first with the private endpoint ip
-8. When we define the Knowledge base we link the Oracle23ai autonomous database
+## **11. Chatbot with Oracle 23AI Data Store**
 
+### **Database Definition**
 
+1. In OCI, create an **Autonomous Database**.
+2. Provide **compartment info**, **display name**, and **database name**.
+3. Choose **Workload Type** — typically *Data Warehouse* (for analytics and vector search).
+4. Select **Deployment Type** — *Serverless* (recommended) or *Dedicated*.
+5. Use **Oracle 23AI version** (default is 19c).
+6. Set **ECPU = 2**, **Storage = 1 TB**, and **Backup retention = 60 days**.
+7. Define **Admin credentials**.
+8. Configure **Network Access**:
+
+   * Secure access via credentials, allowed IPs, or VCN.
+   * Choose **Private Endpoint (OCI VCN)**.
+9. Specify the **VCN** and **subnet** (mTLS not required).
+10. Provide a **valid notification email**.
+
+### **Connection Setup**
+
+1. From the OCI dashboard, select your Autonomous DB and copy the **connection string** (ports 1521–1522).
+2. Retrieve the **Private Endpoint IP**.
+3. In **Database Tools**, create a **new connection**:
+
+   * Name, compartment, and Autonomous DB.
+   * Use **Admin credentials**.
+4. Create a **password secret** in **OCI Vault**, matching the Autonomous DB password.
+5. Retrieve the **connection strings** again.
+6. Replace the host in the first connection string with the **Private Endpoint IP**.
+7. When defining the **Knowledge Base**, link it to your **Oracle 23AI Autonomous Database**.
+
+---

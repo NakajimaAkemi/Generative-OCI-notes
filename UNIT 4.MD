@@ -178,6 +178,14 @@ When defining an agent:
 
 ---
 
-✅ **Summary:**
-The OCI Generative AI Agent framework integrates LLMs, knowledge bases, and object storage to deliver contextually aware and explainable AI systems. It follows a modular architecture combining reasoning, memory, and external data access, all within defined OCI limits.
+## Chatbot with Object Store
+The process of agent setup is the following
+1. Create a Knowledge base (define the object storage type), we can togle the hybrid search (lexical + semantical) it does lexical first and then re ranks with semantical otherwise it only does lexical, define the data source)
+2. Define the data source, we can choose multimodal parsing for charts parsing, we can select the bucket and decide which document to use in the bucket or more, we can then toggle the automatic ingestion process, if it fails we can restart the job, the successfull ones are skipped (injection jobs are creating state then to active once ready) 
+2. Setup the agent
+3. Setup the endpoint
 
+At any point we can specify the compartment type for our policies
+
+> [!NOTE]
+> When looking at Knowledge bases, we can see the data source and check the status and logs of injection jobs

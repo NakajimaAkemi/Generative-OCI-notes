@@ -101,6 +101,7 @@ Accessible through the **Analytics & AI service**, the GenAI dashboard allows cu
 5. **Frequency Penalty:** Reduces repetition of frequent tokens.
 6. **Presence Penalty:** Penalizes token reuse regardless of frequency.
 7. **Max Tokens:** Limits response length.
+8. **Seed:** Randomness of the response
 
 ### 📈 Embedding Model Parameters
 

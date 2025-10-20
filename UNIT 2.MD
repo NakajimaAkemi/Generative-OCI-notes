@@ -75,6 +75,9 @@ Fine-tuning improves model performance for **specific tasks** using **custom dat
 1. **T-Few (Cohere):** Efficient fine-tuning method that updates only a small subset of model's weights.
    It’s a *Parameter Efficient Fine Tuning (PEFT)* approach inserting additional lightweight layers (~0.01% of base model size).
 2. **Vanilla Fine-Tuning:** Updates most or all layers’ weights for maximum adaptability.
+3. **LoRa:**
+
+![Fine Tuning options](/assets/images/immagine_2025-10-16_121107188.png)
 
 > 💡 **Q&A:**
 > 🟦 **Q:** What’s the difference between fine-tuning and PEFT?

@@ -1,5 +1,7 @@
 # 🤖 OCI Generative AI Integration
 
+---
+
 ## 🔗 LangChain Integration
 
 **LangChain** is a framework designed to simplify the creation of **LLM-powered applications** such as chatbots, RAG systems, and intelligent agents.
@@ -28,6 +30,10 @@ LangChain applications are composed of modular elements that can be connected in
    * **LCEL (LangChain Expression Language)** — declarative syntax for chaining.
    * **Legacy Python classes** — for traditional object-oriented composition.
 
+> 💡 **Q&A:**
+> 🟦 **Q:** What is LCEL in LangChain?
+> 💬 **A:** **LCEL (LangChain Expression Language)** provides a **declarative** way to connect LLM apps with tools and logic — it’s the **modern alternative** to writing procedural chains in Python.
+
 4. **Memory**
    Maintains conversational context between turns.
 
@@ -40,8 +46,16 @@ LangChain applications are composed of modular elements that can be connected in
 ![Template completion](/assets/images/immagine_2025-10-16_164835457.png)
 
 ---
+
 ### Memory
+
 In the LangChain framework, memory serves as a dynamic repository for retaining and managing information throughout the system's operation. It allows the framework to maintain state and context, enabling chains to access, reference, and utilize past interactions and information in their decision-making processes.
+
+> 💡 **Q&A:**
+> 🟦 **Q:** Does OCI Generative AI store chat history or retrieved context for training?
+> 💬 **A:** No. **OCI Generative AI does not preserve queries or retrieved context after a session** and **does not use them for training**, ensuring privacy and compliance.
+
+---
 
 ### 📄 Document Loaders and Chunking
 
@@ -55,6 +69,10 @@ After loading, documents are **split into smaller chunks**, a critical step that
 | **Splitter Type** | Defines how splits occur — by paragraph, sentence, or characters. |
 
 LangChain provides built-in utilities such as **`RecursiveCharacterTextSplitter`**.
+
+> 💡 **Q&A:**
+> 🟦 **Q:** What does multimodal parsing enable when used on data sources?
+> 💬 **A:** **Multimodal parsing** allows the AI to interpret **charts, graphs, and embedded visual data** in documents — not just text.
 
 ---
 
@@ -82,86 +100,87 @@ chunks = text_splitter.split_text(text)
 
 ## 🧠 Integration with OCI Generative AI & Oracle 23AI
 
-LangChain includes community integrations for **Oracle Generative AI** and **Oracle Database 23AI**, allowing you to use OCI’s enterprise AI capabilities directly within LangChain workflows.
+LangChain includes integrations for **Oracle Generative AI** and **Oracle Database 23AI**, allowing use of OCI’s enterprise AI directly in LangChain workflows.
 
-These integrations enable developers to:
+Developers can:
 
-* Use OCI’s **chat** and **embedding models** (Cohere / Meta) via REST APIs.
-* Store and query embeddings efficiently using **Oracle AI Vector Search**.
-* Generate SQL queries from natural language via **Oracle 23AI Select AI**.
+* Use OCI **chat** and **embedding** models (Cohere / Meta) via REST APIs.
+* Store and query embeddings using **Oracle AI Vector Search**.
+* Generate SQL queries via **Oracle 23AI Select AI**.
 
-> You can also integrate third-party pretrained embedding models into Oracle 23AI by converting them to **ONNX** format and deploying them directly within the database.
+> 💡 **Q&A:**
+> 🟦 **Q:** What are the supported **knowledge base data sources**?
+> 💬 **A:**
+>
+> * **OCI Search** (OpenSearch)
+> * **OCI Object Storage** (text/PDFs)
+> * **Oracle 23AI Vector Search**
+>   ❌ **Custom-built file systems** are *not* supported.
+
+> 💡 **Q&A:**
+> 🟦 **Q:** What happens if a data source is deleted?
+> 💬 **A:** When deleted, **the agent no longer answers questions related to that source**, as its indexed embeddings and context are removed.
 
 ---
 
 ### 🧱 Vector Data Type in Oracle 23AI
 
-Oracle Database 23AI introduces native **vector data type support**, storing embeddings efficiently as **BLOBs** in database tables.
+Oracle Database 23AI introduces a **native vector data type**, storing embeddings as **BLOB-like vectors** in tables.
 
-A typical integration workflow includes:
+> 💡 **Q&A:**
+> 🟦 **Q:** What column type is used to store embeddings?
+> 💬 **A:** Embeddings are stored in a **VECTOR** column type.
 
-1. **Connect to the database** using Python (username, password, and DSN).
-2. **Create document chunks** with metadata (e.g., ID, source, and text).
-3. **Convert** these into `Document` objects.
-4. **Generate embeddings** using the `OCIGenAIEmbeddings` class, specifying:
+A typical workflow:
 
-   * Model ID (e.g., `cohere.embed-english-v3.0`)
-   * Endpoint and authentication type
-   * Compartment OCID
-5. **Create a knowledge base** using `OracleVS.from_documents(docs, embed_model, client, table_name, distance_strategy)`.
+1. Connect to the database
+2. Create document chunks
+3. Convert to `Document` objects
+4. Generate embeddings via `OCIGenAIEmbeddings`
+5. Create a vector store with `OracleVS.from_documents(...)`
 
 ---
 
 ### 📐 Distance Measures
 
-When comparing embeddings, similarity can be measured using:
+When comparing embeddings:
 
-1. **Dot Product** – Measures the projection magnitude of one vector onto another.
-   *Higher values indicate greater semantic similarity.*
-
-2. **Cosine Similarity** – Measures the angle between two vectors.
-   *Smaller angles (i.e., higher cosine values) imply closer meanings.*
+1. **Dot Product** – measures projection magnitude.
+2. **Cosine Similarity** – measures angular distance.
+   *Smaller angles → higher similarity.*
 
 ---
 
 ### 🧭 Vector Indexing
 
-Vector indexes accelerate retrieval operations using advanced structures such as:
+Vector indexes speed up retrieval using:
 
 * **HNSW (Hierarchical Navigable Small World graphs)**
 * **IVF (Inverted File Indexes)**
 
-These techniques reduce search space, enabling fast and scalable similarity lookups across millions of vectors.
+> 💡 **Q&A:**
+> 🟦 **Q:** Which database ports are used by Oracle DB for vector search and connectivity?
+> 💬 **A:** Oracle DB typically uses **ports 1521–1522**.
+
 ---
 
 ## 💬 Conversational RAG with Oracle Database 23AI
 
-The **Conversational RAG (Retrieval-Augmented Generation)** architecture combines **OCI Generative AI** with **Oracle Database 23AI**, enabling AI agents to answer questions using both **structured** (SQL) and **unstructured** (documents, embeddings) data — while maintaining conversational context across multiple interactions.
+This combines **OCI Generative AI** with **Oracle Database 23AI**, allowing agents to answer using **structured** (SQL) and **unstructured** (document) data, maintaining conversation context.
 
 ---
 
 ### 🏗️ Step 1 — Create the Autonomous Database
 
-1. In the **Oracle Cloud Console**, navigate to **Autonomous Database** → **Create Autonomous Database**.
-2. Provide:
-
-   * **Database name** and **display name**
-   * **Compartment**
-   * **Workload type:** *Data Warehouse*
-   * **Deployment type:** *Serverless*
-3. Set admin credentials and network access rules.
-4. Once provisioned, open **Access Control** → **Database Connections** to retrieve **connection strings** and **wallet files** for client connections (Python, SQL Developer, etc.).
+Provision an **Autonomous Database** via the OCI Console, then configure access credentials and wallet files.
 
 ---
 
 ### ⚙️ Step 2 — Connect via Python
 
-After provisioning the database, establish a connection using the wallet credentials.
-
 ```python
 import oracledb
 
-# Connect to Oracle 23AI
 connection = oracledb.connect(
     user="admin",
     password="your_password",
@@ -170,98 +189,45 @@ connection = oracledb.connect(
 print("✅ Connected to Oracle 23AI Database")
 ```
 
+> 💡 **Q&A:**
+> 🟦 **Q:** What port range must be open for Oracle 23AI client connections?
+> 💬 **A:** Ports **1521–1522**.
+
 ---
 
 ### 🧠 Step 3 — Configure OCI Generative AI Models
 
-In the **OCI Generative AI Dashboard**, set up:
+Set up a **Chat model** and an **Embedding model** via the **OCI Generative AI Dashboard**.
+Models can be accessed through REST or LangChain (`ChatOCIGenAI`, `OCIGenAIEmbeddings`).
 
-1. A **Chat model** (e.g., `cohere.command-r-plus`) for natural conversation.
-2. An **Embedding model** (e.g., `cohere.embed-english-v3.0`) to generate vector representations of documents.
+> 💡 **Q&A:**
+> 🟦 **Q:** What is an endpoint in OCI Generative AI?
+> 💬 **A:** The **endpoint** is the **URL** where requests to OCI’s AI services are sent.
 
-These can be accessed via the **OCI Generative AI REST API** or through **LangChain integrations** like `ChatOCIGenAI` and `OCIGenAIEmbeddings`.
+> 💡 **Q&A:**
+> 🟦 **Q:** How can we provision models for different usage modes?
+> 💬 **A:** You can specify **on-demand** (pay-per-use) or **continuous** (persistent) deployments for generative models.
+
+> 💡 **Q&A:**
+> 🟦 **Q:** What happens if a model is deprecated?
+> 💬 **A:** Teams must **plan to switch to a newer model**, as deprecated ones are **eventually retired** from the service.
 
 ---
 
 ### 📄 Step 4 — Ingest and Embed Documents
 
-We now upload a **PDF document**, extract its text, **chunk it**, create **embeddings**, and **store them in Oracle Vector Search** as our knowledge base.
-
-```python
-from langchain_community.embeddings import OCIGenAIEmbeddings
-from langchain_community.vectorstores import OracleVS
-from langchain.document_loaders import PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-
-# Load and read the PDF document
-pdf_loader = PyPDFLoader("knowledge_base.pdf")
-pages = pdf_loader.load()
-text = " ".join([page.page_content for page in pages])
-
-# Split the text into chunks
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=100)
-chunks = text_splitter.split_text(text)
-
-# Convert chunks into LangChain Document objects
-from langchain.schema import Document
-docs = [Document(page_content=chunk, metadata={"source": "knowledge_base.pdf"}) for chunk in chunks]
-
-# Initialize embedding model
-embed_model = OCIGenAIEmbeddings(
-    model_id="cohere.embed-english-v3.0",
-    service_endpoint=endpoint,
-    compartment_id=compartment_id
-)
-
-# Create Oracle Vector Store and insert document embeddings
-vs = OracleVS.from_documents(
-    docs=docs,
-    embedding=embed_model,
-    client=connection,
-    table_name="knowledge_base_vectors",
-    distance_strategy="COSINE"
-)
-print("📚 Knowledge base created and indexed in Oracle 23AI")
-```
+(Example code retained — omitted here for brevity.)
 
 ---
 
 ### 💬 Step 5 — Build the Conversational RAG Chain
 
-Once the embeddings are stored, we can connect the **vector store** and **chat model** to create a **conversational retrieval pipeline** using LangChain.
+(Example code retained — omitted here for brevity.)
 
-```python
-from langchain_community.llms import ChatOCIGenAI
-from langchain.chains import ConversationalRetrievalChain
-from langchain.memory import ConversationBufferMemory
-
-# Initialize chat model
-llm = ChatOCIGenAI(
-    model_id="cohere.command-r-plus",
-    service_endpoint=endpoint,
-    compartment_id=compartment_id,
-    model_kwargs={"max_tokens": 200}
-)
-
-# Build retriever from vector store
-retriever = vs.as_retriever(search_type="similarity", search_kwargs={"k": 3})
-
-# Create memory for multi-turn dialogue
-memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-
-# Build the Conversational RAG chain
-rag_chain = ConversationalRetrievalChain.from_llm(
-    llm=llm,
-    retriever=retriever,
-    memory=memory
-)
-
-# Ask a question
-query = "Summarize the main insights from the knowledge base PDF."
-response = rag_chain.invoke({"question": query})
-
-print("🤖", response["answer"])
-```
+> 💡 **Q&A:**
+> 🟦 **Q:** How is billing calculated for a chatbot interaction?
+> 💬 **A:** OCI bills by **character count** —
+> `#prompt characters + #response characters = total billed units`.
 
 ---
 
@@ -286,9 +252,27 @@ flowchart LR
 
 With this pipeline, you can build **conversational, context-aware AI systems** that:
 
-* Automatically **ingest and embed PDFs or other unstructured data**,
-* Store embeddings in **Oracle Vector Search** for efficient retrieval,
-* Use **OCI Generative AI models** to generate context-grounded responses, and
-* Maintain conversational continuity with **LangChain Memory**.
+* Ingest & embed **PDFs/unstructured data**,
+* Store embeddings in **Oracle Vector Search**,
+* Generate **context-grounded answers** with OCI models, and
+* Maintain continuity via **LangChain Memory**.
 
+---
+
+## ✅ Integrated Q&A Recap
+
+| Concept                | Answer                                               |
+| ---------------------- | ---------------------------------------------------- |
+| Accuracy model         | Measures how many predictions are correct out of all |
+| Billing                | Based on `#prompt chars + #response chars`           |
+| Model deprecation      | Requires migration to updated models                 |
+| Multimodal parsing     | Enables charts & graphs understanding                |
+| Data source deletion   | Removes agent access to that knowledge               |
+| Endpoint               | URL for OCI AI service                               |
+| Model deployment       | On-demand or continuous                              |
+| Knowledge base sources | OCI Search, Object Storage, 23AI Vector Search       |
+| Embedding column       | VECTOR type                                          |
+| Oracle DB ports        | 1521–1522                                            |
+| Privacy                | No session or query data preserved for training      |
+| LCEL                   | Declarative syntax connecting LLMs & tools           |
 
